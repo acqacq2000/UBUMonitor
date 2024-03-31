@@ -7,6 +7,7 @@ import es.ubu.lsi.ubumonitor.controllers.tabs.ClusteringController;
 import es.ubu.lsi.ubumonitor.controllers.tabs.EnrollmentController;
 import es.ubu.lsi.ubumonitor.controllers.tabs.ForumController;
 import es.ubu.lsi.ubumonitor.controllers.tabs.MultiController;
+import es.ubu.lsi.ubumonitor.controllers.tabs.ProcrastinationController;
 import es.ubu.lsi.ubumonitor.controllers.tabs.RiskController;
 import es.ubu.lsi.ubumonitor.controllers.tabs.SigmaController;
 import es.ubu.lsi.ubumonitor.controllers.tabs.VisualizationController;
@@ -47,6 +48,16 @@ public class WebViewTabsController {
 	
 	@FXML
 	private CalendarEventController calendarEventController;
+	
+	//ESTO LO ESTOY HACIENDO YO
+	
+	@FXML
+	private Tab procrastinationTab;
+	
+	@FXML
+	private ProcrastinationController procrastinationController;
+	
+	//-------------------------
 	
 	@FXML
 	private Tab multiTab;
@@ -104,6 +115,9 @@ public class WebViewTabsController {
 		add(riskController, mainController, riskTab, actualCourse, mainConfiguration, stage);
 		add(forumController, mainController, forumTab, actualCourse, mainConfiguration, stage);
 		add(calendarEventController, mainController, calendarEventTab, actualCourse, mainConfiguration, stage);
+		//Esto lo he hecho yo
+		add(procrastinationController, mainController, procrastinationTab, actualCourse, mainConfiguration, stage);
+		//-------------------
 		add(multiController, mainController, multiTab, actualCourse, mainConfiguration, stage);
 		add(enrollmentController, mainController, enrollmentTab, actualCourse, mainConfiguration, stage);
 		add(sigmaController, mainController, sigmaTab, actualCourse, mainConfiguration, stage);
@@ -142,7 +156,19 @@ public class WebViewTabsController {
 	public Tab getForumTab() {
 		return forumTab;
 	}
+	
+	//Esto lo he hecho yo
+	
+	public ProcrastinationController getProcrastinationController() {
+		return procrastinationController;
+	}
+	
 
+	public Tab getProcrastinationTab() {
+		return procrastinationTab;
+	}
+
+	//-------------------
 
 	public ForumController getForumController() {
 		return forumController;

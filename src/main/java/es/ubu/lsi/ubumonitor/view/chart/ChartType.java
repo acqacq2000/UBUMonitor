@@ -68,9 +68,11 @@ public enum ChartType {
 	USUAL_ADDRESS_MAP(Tabs.SIGMA, 50),
 	SIGMA_TABLE_ENROLLED(Tabs.SIGMA, 44),
 	SIGMA_TABLE_NOT_ENROLLED(Tabs.SIGMA, 45),
+	
+	PROCRASTINATION_CHART(Tabs.PROCRASTINATION, 52)
 	  ;
 	
-	// next id 51
+	// next id 53
 
 	private Tabs tab;
 	private int id;

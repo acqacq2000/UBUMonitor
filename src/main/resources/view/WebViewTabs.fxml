@@ -48,6 +48,12 @@
 					source="tabs/Clustering.fxml" />
 			</content>
 		</Tab>
+		<Tab fx:id="procrastinationTab" text="%tab.procrastination">
+			<content>
+				<fx:include fx:id="procrastination"
+					source="tabs/Procrastination.fxml" />
+			</content>
+		</Tab>
 		<Tab fx:id="sigmaTab" text="%tab.sigma">
 			<content>
 				<fx:include fx:id="sigma" source="tabs/Sigma.fxml" />
