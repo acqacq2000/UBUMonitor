@@ -25,6 +25,9 @@ public class Constants {
 	public static final String DESCRIPTIONFORMAT = "descriptionformat";
 	public static final String DISCUSSION = "discussion";
 	public static final String DISCUSSIONS = "discussions";
+	//Begin add
+	public static final String DUEDATE = "duedate";
+	//End add
 	public static final String EMAIL = "email";
 	public static final String ENABLECOMPLETION = "enablecompletion";
 	public static final String ENDDATE = "enddate";

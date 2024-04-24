@@ -145,27 +145,27 @@ public class ForumDiscussion implements Serializable {
 	public boolean isCanreply() {
 		return canreply;
 	}
-
+	
 	public void setCanreply(boolean canreply) {
 		this.canreply = canreply;
 	}
-
+	
 	public boolean isCanlock() {
 		return canlock;
 	}
-
+	
 	public void setCanlock(boolean canlock) {
 		this.canlock = canlock;
 	}
-
+	
 	public boolean isCanfavourite() {
 		return canfavourite;
 	}
-
+	
 	public void setCanfavourite(boolean canfavourite) {
 		this.canfavourite = canfavourite;
 	}
-
+	
 	public void setId(int id) {
 		this.id = id;
 	}

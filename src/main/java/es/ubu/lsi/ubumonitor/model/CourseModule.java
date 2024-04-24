@@ -3,6 +3,8 @@ package es.ubu.lsi.ubumonitor.model;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.Instant;
+
 
 /**
  * Representa las actividades o recursos presentes en un curso.
@@ -77,7 +79,17 @@ public class CourseModule implements Serializable {
 	 * Optional. module availability settings
 	 */
 	private String availability;
-
+	
+	//Added
+	/**
+	 * Optional. module(assignment) opened date
+	 */
+	private Instant timeOpened;
+	//Added
+	/**
+	 * Optional. module(assignment) due date
+	 */
+	private Instant timeDue;
 	/**
 	 * number of identation in the site
 	 */
@@ -193,7 +205,25 @@ public class CourseModule implements Serializable {
 	public void setAvailability(String availability) {
 		this.availability = availability;
 	}
+	
+	//Added
+	public Instant getTimeOpened() {
+		return timeOpened;
+	}
 
+	public void setTimeOpened(Instant timeOpened) {
+		this.timeOpened = timeOpened;
+	}
+	
+	public Instant getTimeDue() {
+		return timeDue;
+	}
+
+	public void setTimeDue(Instant timeDue) {
+		this.timeDue = timeDue;
+	}
+	//End added
+	
 	public int getIndent() {
 		return indent;
 	}

@@ -10,7 +10,10 @@ public class SelectionMainController {
 	
 	@FXML
 	private SelectionForumController selectionForumController;
-	
+
+	@FXML
+	private SelectionProcrastinationController selectionProcrastinationController;
+
 	@FXML
 	private SelectionEmptyController selectionEmptyController;
 	
@@ -20,6 +23,7 @@ public class SelectionMainController {
 	public void init(MainController mainController, Course actualCourse) {
 		selectionController.init(mainController, actualCourse);
 		selectionForumController.init(mainController, actualCourse);
+		selectionProcrastinationController.init(mainController, actualCourse);
 		selectionEmptyController.init(mainController, actualCourse);
 		selectionCourseModuleController.init(mainController, actualCourse);
 		
@@ -37,4 +41,7 @@ public class SelectionMainController {
 		return selectionCourseModuleController;
 	}
 	
+	public SelectionProcrastinationController getSelectionProcrastinationController() {
+		return selectionProcrastinationController;
+	}
 }

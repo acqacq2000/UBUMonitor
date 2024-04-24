@@ -63,6 +63,9 @@ public class MainController implements Initializable {
 
 	@FXML
 	private SelectionUserController selectionUserController;
+	
+	//@FXML
+	private SelectionProcrastinationController selectionProcrastinationController;
 
 	@FXML
 	private WebViewTabsController webViewTabsController;
@@ -85,6 +88,7 @@ public class MainController implements Initializable {
 
 			menuController.init(this);
 			selectionUserController.init(this, controller.getActualCourse(), controller.getMainConfiguration());
+			//selectionProcrastinationController.init(this, controller.getActualCourse());
 			selectionMainController.init(this, controller.getActualCourse());
 			webViewTabsController.init(this, controller.getActualCourse(), controller.getMainConfiguration(),
 					controller.getStage());
@@ -207,6 +211,10 @@ public class MainController implements Initializable {
 
 	public SelectionMainController getSelectionMainController() {
 		return selectionMainController;
+	}
+	
+	public SelectionProcrastinationController getSelectionProcrastinationController() {
+		return selectionProcrastinationController;
 	}
 
 	public WebViewTabsController getWebViewTabsController() {

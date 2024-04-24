@@ -1,10 +1,12 @@
 package es.ubu.lsi.ubumonitor.controllers.load;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import es.ubu.lsi.ubumonitor.model.CourseModule;
@@ -12,6 +14,7 @@ import es.ubu.lsi.ubumonitor.model.DataBase;
 import es.ubu.lsi.ubumonitor.model.DescriptionFormat;
 import es.ubu.lsi.ubumonitor.model.ModuleType;
 import es.ubu.lsi.ubumonitor.model.Section;
+import es.ubu.lsi.ubumonitor.model.log.logtypes.Course;
 import es.ubu.lsi.ubumonitor.util.UtilMethods;
 import es.ubu.lsi.ubumonitor.webservice.api.core.course.CoreCourseGetContents;
 import es.ubu.lsi.ubumonitor.webservice.webservices.WebService;
@@ -72,6 +75,10 @@ public class PopulateCourseContent {
 	}
 
 	private CourseModule populateCourseModule(JSONObject jsonObject) {
+		//System.out.println("entro en el populat course module" + jsonObject.optInt(Constants.DUEDATE));
+		//System.out.println("JSON\n" + jsonObject.toString(6));
+		//System.out.println("get type " + module.getModuleType());
+
 		CourseModule module = dataBase.getModules()
 				.getById(jsonObject.getInt(Constants.ID));
 		
@@ -85,6 +92,19 @@ public class PopulateCourseContent {
 		module.setModuleType(ModuleType.get(jsonObject.optString(Constants.MODNAME)));
 		module.setModplural(jsonObject.optString(Constants.MODPLURAL));
 		module.setIndent(jsonObject.optInt(Constants.INDENT));
+
+		//Added
+		if (module.getModuleType().equals(ModuleType.ASSIGNMENT)){
+			try {
+				module.setTimeOpened(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
+			}catch(JSONException e) {}
+			try {
+				module.setTimeDue(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(1).getLong("timestamp")));
+			}catch(JSONException e) {}	
+
+			System.out.println("La tarea " + module.getModuleName() + " abrió el " + module.getTimeOpened() + " y cerró el " + module.getTimeDue());
+			
+		}
 
 		return module;
 	}

@@ -71,6 +71,9 @@ public class PopulateForum {
 	}
 
 	public ForumDiscussion populateForumDiscussion(JSONObject jsonObject) {
+				
+//		System.out.println("JSON\n" + jsonObject.toString(3));
+
 		ForumDiscussion forumDiscussion = dataBase.getForumDiscussions()
 				.getById(jsonObject.getInt(Constants.DISCUSSION));
 		forumDiscussion.setName(jsonObject.optString(Constants.NAME));
@@ -91,6 +94,13 @@ public class PopulateForum {
 		forumDiscussion.setCanlock(jsonObject.optBoolean(Constants.CANLOCK));
 		forumDiscussion.setCanfavourite(jsonObject.optBoolean(Constants.CANFAVOURITE));
 
+		System.out.println("JSON foro getTimemodified" + forumDiscussion.getTimemodified());
+		System.out.println("JSON foro getTimestart" + forumDiscussion.getTimestart());
+		System.out.println("JSON foro getTimeend" + forumDiscussion.getTimeend());
+		System.out.println("JSON foro getCreated" + forumDiscussion.getCreated());
+		System.out.println("JSON foro getModified" + forumDiscussion.getModified());
+
+		
 		return forumDiscussion;
 	}
 

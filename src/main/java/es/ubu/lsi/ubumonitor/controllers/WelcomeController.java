@@ -848,9 +848,16 @@ public class WelcomeController implements Initializable {
 								LOGGER.info("Log descargado");
 								updateMessage(I18n.get("label.parselog"));
 								Logs logs = new Logs(downloadLogController.getServerTimeZone());
+								
+								//HE HECHO UN SOUT
+								//System.out.println("Deberia de ir primero: " + logs);
+								
 								LogCreator.parserResponse(logs, response.body()
 										.charStream());
 								actualCourse.setLogs(logs);
+								
+								//HE HECHO UN SOUT
+								//System.out.println("actualCourse.getLogs()" + actualCourse.getLogs());
 
 							} else {
 
@@ -861,6 +868,12 @@ public class WelcomeController implements Initializable {
 							LogStats logStats = new LogStats(actualCourse.getLogs()
 									.getList());
 							actualCourse.setLogStats(logStats);
+							
+							
+							//HE HECHO UN SOUT
+							//System.out.println(actualCourse.getLogStats().getByType(TypeTimes.ALL).getComponents().generateStatistics(null, null, null));
+							
+							
 							Set<EnrolledUser> notEnrolled = logStats.getByType(TypeTimes.ALL)
 									.getComponents()
 									.getUsers()

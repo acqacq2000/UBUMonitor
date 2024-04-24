@@ -33,16 +33,13 @@ public class ForumController extends WebViewAction {
 
 	@Override
 	public void onWebViewTabChange() {
-
 		javaConnector.updateOptionsImages();
 		javaConnector.updateChart();
-
 	}
 
 	@Override
 	public void updateListViewEnrolledUser() {
 		updateChart();
-
 	}
 
 	@Override
@@ -53,7 +50,6 @@ public class ForumController extends WebViewAction {
 	@Override
 	public void applyConfiguration() {
 		updateChart();
-
 	}
 
 	@Override
@@ -77,5 +73,4 @@ public class ForumController extends WebViewAction {
 	public DatePicker getDatePickerEnd() {
 		return dateController.getDatePickerEnd();
 	}
-
 }

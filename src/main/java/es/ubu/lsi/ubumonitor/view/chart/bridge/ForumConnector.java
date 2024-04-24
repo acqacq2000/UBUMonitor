@@ -32,7 +32,6 @@ public class ForumConnector extends JavaConnectorAbstract {
 				.getListViewForum();
 		addChart(new ForumTable(mainController, listViewForum, datePickerStart, datePickerEnd));
 		addChart(new ForumBar(mainController, listViewForum, datePickerStart, datePickerEnd));
-
 		addChart(new ForumNetwork(mainController, listViewForum, datePickerStart, datePickerEnd));
 		addChart(new ForumWordCloud(mainController, listViewForum, webView, datePickerStart, datePickerEnd));
 		addChart(new ForumUserPostBar(mainController, listViewForum, datePickerStart, datePickerEnd));

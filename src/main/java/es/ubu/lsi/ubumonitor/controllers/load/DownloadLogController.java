@@ -95,6 +95,7 @@ public class DownloadLogController {
 	 * @return csv del log
 	 */
 	public Response downloadLog(boolean web) {
+		System.out.println("DESCARGO EL LOG COMPLETO");
 		return downloadLog("", web);
 	}
 

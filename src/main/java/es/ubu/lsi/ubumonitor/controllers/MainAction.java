@@ -30,6 +30,10 @@ public interface MainAction {
 	
 	public default void updateListViewForum() {}
 	
+	public default void updateListViewProcrastination() {}
+	
+	public default void updateListViewProcrastinationEvent() {}
+	
 	public void saveImage();
 	
 	public void copyImage();

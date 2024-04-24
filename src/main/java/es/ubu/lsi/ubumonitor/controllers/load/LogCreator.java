@@ -27,6 +27,7 @@ import es.ubu.lsi.ubumonitor.model.Event;
 import es.ubu.lsi.ubumonitor.model.LogLine;
 import es.ubu.lsi.ubumonitor.model.Logs;
 import es.ubu.lsi.ubumonitor.model.Origin;
+import es.ubu.lsi.ubumonitor.model.TryInformation;
 import es.ubu.lsi.ubumonitor.model.log.logtypes.LogTypes;
 import es.ubu.lsi.ubumonitor.model.log.logtypes.ReferencesLog;
 import es.ubu.lsi.ubumonitor.util.I18n;
@@ -67,6 +68,14 @@ public class LogCreator {
 
 	private static final Set<String> ALL_COLUMNS = new HashSet<>(Arrays.asList(TIME, USER_FULL_NAME, AFFECTED_USER,
 			EVENT_CONTEXT, COMPONENT, EVENT_NAME, DESCRIPTION, ORIGIN, IP_ADRESS));
+	
+	//--------------------------------------------------------
+	//AQUI AÑADO MI TROZO DE CODIGO
+	
+	public static List<TryInformation> tries;
+	
+	//AQUI TERMINO DE AÑADIR MI TROZO DE CODIGO
+	//--------------------------------------------------------
 
 	/**
 	 * Cambia la zona horia del formateador de tiempo
@@ -137,6 +146,10 @@ public class LogCreator {
 
 		try (CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
 			List<LogLine> logList = LogCreator.createLogs(csvParser);
+			
+			//HE HECHO UN SOUT
+			//System.out.println("parserResponse: " + logs);
+			
 			logs.addAll(logList);
 		}
 		if (!NOT_AVAIBLE_COMPONENTS.isEmpty()) {
@@ -159,13 +172,43 @@ public class LogCreator {
 		Set<String> headers = csvParser.getHeaderMap()
 				.keySet();
 		LOGGER.info("Los nombres de las columnas del csv son: {}", headers);
+		
+		//HE HECHO UN SOUT
+		System.out.println("Los nombres de las columnas del csv son: {}" + headers);
+		
 		if (!headers.isEmpty() && headers.stream()
 				.noneMatch(ALL_COLUMNS::contains)) {
 			throw new IllegalArgumentException(I18n.get("error.logsEnglish"));
 		}
 		for (CSVRecord csvRecord : csvParser) {
 			LogLine logLine = createLog(headers, csvRecord);
-
+			//System.out.println("LOGLINE" + logLine);
+			
+			
+			//--------------------------------------------------------
+			//AQUI AÑADO MI TROZO DE CODIGO
+			
+			if(logLine.getComponent() == Component.QUIZ || logLine.getComponent() == Component.ASSIGNMENT) {
+				//System.out.println("Estoy recogiendo un " + logLine.getEventName().getName());
+				if(logLine.getEventName() == Event.QUIZ_ATTEMPT_SUBMITTED || logLine.getEventName() == Event.A_SUBMISSION_HAS_BEEN_SUBMITTED) {
+					
+					TryInformation intento;
+					
+					intento = new TryInformation();
+					intento.courseModule = logLine.getCourseModule();
+					intento.user = logLine.getUser();
+					intento.fechaSubida = logLine.getTime();
+					System.out.println(intento.toString());
+					
+					tries.add(intento);
+				}
+			}
+			
+			//AQUI TERMINO DE AÑADIR MI TROZO DE CODIGO
+			//--------------------------------------------------------
+			
+		
+			
 			logs.addFirst(logLine);
 
 		}
@@ -205,12 +248,21 @@ public class LogCreator {
 		}
 		log.setEventName(event);
 
+		
+		
+		
+		
 		if (headers.contains(LogCreator.DESCRIPTION)) {
 			String description = csvRecord.get(LogCreator.DESCRIPTION);
+			
+			//HE HECHO UN SOUT
+			//System.out.println(description);
+			
 			List<Integer> ids = getIdsInDescription(description);
 			try {
 				ReferencesLog referencesLog = LogTypes.getReferenceLog(component, event);
 				referencesLog.setLogReferencesAttributes(log, ids);
+								
 				if (headers.contains(LogCreator.USER_FULL_NAME) && log.getUser() != null && log.getUser()
 						.getFullName() == null) {
 					log.getUser()
@@ -219,6 +271,8 @@ public class LogCreator {
 			} catch (Exception e) {
 				LOGGER.error("Problema en linea de log: " + csvRecord + " usando el gestor: con los ids:" + ids, e);
 			}
+		}else {
+			System.out.println("No tiene descripcion");
 		}
 
 		//considering Time column always first

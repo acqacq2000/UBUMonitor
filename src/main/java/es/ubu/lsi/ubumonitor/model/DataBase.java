@@ -35,6 +35,8 @@ public class DataBase implements Serializable {
 	private SubDataBase<ForumDiscussion> forumDiscussions;
 	private SubDataBase<DiscussionPost> discussionPosts;
 	private SubDataBase<CourseEvent> courseEvents;
+	
+	private SubDataBase<TryInformation> tryInformations;
 
 	/**
 	 * Curso actual del usuario
@@ -61,6 +63,8 @@ public class DataBase implements Serializable {
 		forumDiscussions = checkSubDataBase(forumDiscussions, ForumDiscussion::new);
 		discussionPosts = checkSubDataBase(discussionPosts, DiscussionPost::new);
 		courseEvents = checkSubDataBase(courseEvents, CourseEvent::new);
+		
+		tryInformations = checkSubDataBase(tryInformations, TryInformation::new);
 
 	}
 
@@ -132,6 +136,11 @@ public class DataBase implements Serializable {
 
 	public SubDataBase<CourseEvent> getCourseEvents() {
 		return courseEvents;
+	}
+	
+	
+	public SubDataBase<TryInformation> getTryInformations() {
+		return tryInformations;
 	}
 
 	/**
