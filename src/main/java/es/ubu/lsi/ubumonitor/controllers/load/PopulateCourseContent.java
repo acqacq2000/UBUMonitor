@@ -14,6 +14,7 @@ import es.ubu.lsi.ubumonitor.model.DataBase;
 import es.ubu.lsi.ubumonitor.model.DescriptionFormat;
 import es.ubu.lsi.ubumonitor.model.ModuleType;
 import es.ubu.lsi.ubumonitor.model.Section;
+import es.ubu.lsi.ubumonitor.model.TryInformation;
 import es.ubu.lsi.ubumonitor.model.log.logtypes.Course;
 import es.ubu.lsi.ubumonitor.util.UtilMethods;
 import es.ubu.lsi.ubumonitor.webservice.api.core.course.CoreCourseGetContents;
@@ -94,7 +95,9 @@ public class PopulateCourseContent {
 		module.setIndent(jsonObject.optInt(Constants.INDENT));
 
 		//Added
-		if (module.getModuleType().equals(ModuleType.ASSIGNMENT)){
+		if (TryInformation.EventProcrastincationModuleTypesSubgroup.contains(module.getModuleType())){
+			System.out.println("get type " + module.getModuleType());
+			System.out.println("JSON\n" + jsonObject.toString(6));
 			try {
 				module.setTimeOpened(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
 			}catch(JSONException e) {}

@@ -17,13 +17,17 @@ public class ComponentEvent implements Serializable {
 	private Component component;
 	private Event eventName;
 
+
 	private static Map<Component, Map<Event, ComponentEvent>> componentEventFactory = new EnumMap<>(Component.class);
 
 	private ComponentEvent(Component component, Event eventName) {
 		this.component = component;
 		this.eventName = eventName;
 	}
-
+	
+	//Solo para separador de combobox procrastinacion
+	public ComponentEvent() {}
+		
 	/**
 	 * Devuelve un objecto ComponentEvent a partir del Component y Event. Si ya hay
 	 * almacenado el ComponentEvent, devuelve ese y si no crea uno nuevo y lo

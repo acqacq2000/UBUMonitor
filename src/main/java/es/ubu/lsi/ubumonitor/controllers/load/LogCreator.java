@@ -72,7 +72,7 @@ public class LogCreator {
 	//--------------------------------------------------------
 	//AQUI AÑADO MI TROZO DE CODIGO
 	
-	public static List<TryInformation> tries;
+	public static List<TryInformation> tries = new ArrayList<TryInformation>();
 	
 	//AQUI TERMINO DE AÑADIR MI TROZO DE CODIGO
 	//--------------------------------------------------------
@@ -254,9 +254,16 @@ public class LogCreator {
 		
 		if (headers.contains(LogCreator.DESCRIPTION)) {
 			String description = csvRecord.get(LogCreator.DESCRIPTION);
-			
 			//HE HECHO UN SOUT
 			//System.out.println(description);
+			
+			// ACQ correct description
+		    description = description.replace("&#039;", "'"); // new line replace code with Moodle 4.4           
+		    // ACQ correct description
+		    
+		    //HE HECHO UN SOUT
+			//System.out.println(description);
+			
 			
 			List<Integer> ids = getIdsInDescription(description);
 			try {

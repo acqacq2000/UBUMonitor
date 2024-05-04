@@ -70,7 +70,7 @@ public class RiskBar extends Plotly {
 				lastActivities, 0.2));
 		data.add(createTrace(I18n.get("label.lastaccess"), selectedEnrolledUser.size(), lastAccess, lastActivities,
 				0.5));
-
+		System.out.println("TRAZA TOTAL RIESGO COMPARADO: " + data);
 	}
 
 	public JSObject createTrace(String name, int nUsers, Map<LastActivity, List<EnrolledUser>> lastAccess,
