@@ -10,9 +10,7 @@ import es.ubu.lsi.ubumonitor.model.Course;
 import es.ubu.lsi.ubumonitor.model.CourseModule;
 import es.ubu.lsi.ubumonitor.view.chart.ChartType;
 import es.ubu.lsi.ubumonitor.view.chart.Tabs;
-import es.ubu.lsi.ubumonitor.view.chart.logs.Scatter;
-import es.ubu.lsi.ubumonitor.view.chart.procrastination.ProcrastinationChart;
-import es.ubu.lsi.ubumonitor.view.chart.procrastination.ProcrastinationLines;
+import es.ubu.lsi.ubumonitor.view.chart.procrastination.ProcrastinationBars;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
@@ -33,8 +31,7 @@ public class ProcrastinationConnector extends JavaConnectorAbstract {
 		CheckComboBox<ComponentEvent> listViewProcrastinationEvent = mainController.getSelectionMainController()
 				.getSelectionProcrastinationController()
 				.getListViewProcrastinationEvent();
-		addChart(new ProcrastinationChart(mainController));
-		addChart(new ProcrastinationLines(mainController, listViewProcrastination, listViewProcrastinationEvent, datePickerStart, datePickerEnd));
+		addChart(new ProcrastinationBars(mainController, listViewProcrastination, listViewProcrastinationEvent, datePickerStart, datePickerEnd));
 		currentChart = charts.get(ChartType.getDefault(Tabs.PROCRASTINATION));
 	}
 

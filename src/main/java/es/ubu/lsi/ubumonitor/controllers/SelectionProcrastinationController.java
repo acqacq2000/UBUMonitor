@@ -3,6 +3,7 @@ package es.ubu.lsi.ubumonitor.controllers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
@@ -86,7 +89,7 @@ public class SelectionProcrastinationController {
 		listViewProcrastinationModules.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		
 		listViewProcrastinationModules.setItems(filteredProcrastinationModules);
-
+		
 		listViewProcrastinationModules.getSelectionModel()
 				.getSelectedItems()
 				.addListener((Change<? extends CourseModule> courseModule) -> mainController.getActions()
@@ -103,7 +106,7 @@ public class SelectionProcrastinationController {
 	                    actualCourse.getUniqueComponentsEvents().stream().
 	                            filter(componentEvent -> TryInformation.EventProcrastincationEventsSubgroup.contains(componentEvent.getEventName()))
 	                            .collect(Collectors.toList())));
-    	
+    		    
 	    // Definir el comportamiento para cuando se seleccionan elementos en el CheckComboBox
 	    checkComboBoxProcrastinationEvents.getCheckModel().checkAll();
 	    checkComboBoxProcrastinationEvents.getCheckModel().getCheckedItems()
@@ -125,6 +128,7 @@ public class SelectionProcrastinationController {
 
 	    // Obtener la lista de eventos que deben mostrarse
 	    List<ComponentEvent> eventsToShow = filteredProcrastinationEvents.stream()
+	            .filter(Objects::nonNull) // Filtrar los elementos nulos
 	            .filter(event -> {
 	                boolean showAssignments = checkBoxProcrastinationAssigments.isSelected();
 	                boolean showQuizzes = checkBoxProcrastinationQuizzes.isSelected();
@@ -156,12 +160,12 @@ public class SelectionProcrastinationController {
 	    // Chequear los elementos que estaban chequeados anteriormente, si aún están disponibles
 	    checkComboBoxProcrastinationEvents.getCheckModel().clearChecks();
 	    for (ComponentEvent item : checkedItems) {
-	    	System.out.println("items: " + checkComboBoxProcrastinationEvents.getItems() + "target item: " + item);
-	    	if (checkComboBoxProcrastinationEvents.getItems().contains(item)) {
-	    		checkComboBoxProcrastinationEvents.getCheckModel().check(item);
-	    	}
+	        if (checkComboBoxProcrastinationEvents.getItems().contains(item)) {
+	            checkComboBoxProcrastinationEvents.getCheckModel().check(item);
+	        }
 	    }
 	}
+
 
 
 	private Predicate<CourseModule> getProcrastinationPredicate() {
@@ -191,9 +195,19 @@ public class SelectionProcrastinationController {
 					setText(null);
 					setGraphic(null);
 				} else {
-					setText(courseModule.getModuleName() + " --> " + courseModule.getTimeOpened());
+					if(courseModule.getTimeOpened() == null) {
+						setText(courseModule.getModuleName() + " (Sin fecha apertura)");
+						setTextFill(Color.GRAY);
+	                    setFont(Font.font("System", FontPosture.ITALIC, 12)); // Establece el estilo en cursiva
+	                    setDisable(true);
 
-					setTextFill(courseModule.isVisible() ? Color.BLACK : Color.GRAY);
+					}else {
+						setText(courseModule.getModuleName() + " --> " + courseModule.getTimeOpened());
+						setTextFill(courseModule.isVisible() ? Color.BLACK : Color.GRAY);
+	                    setFont(Font.getDefault()); // Restaura la fuente predeterminada si no es nula
+	                    setDisable(false);
+					}
+
 
 					try {
 						Image image = new Image(AppInfo.IMG_DIR + courseModule.getModuleType()
@@ -228,7 +242,19 @@ public class SelectionProcrastinationController {
 	
 
 	public void selectAllAssignmentsAndQuizzes() {
-		listViewProcrastinationModules.getSelectionModel().selectAll();
+		// Seleccionar todos los elementos
+	    listViewProcrastinationModules.getSelectionModel().selectAll();
+
+	    // Obtener los índices de los elementos deshabilitados
+	    List<Integer> disabledIndexes = listViewProcrastinationModules.getItems().stream()
+	            .filter(module -> module.getTimeOpened() == null)
+	            .map(module -> listViewProcrastinationModules.getItems().indexOf(module))
+	            .collect(Collectors.toList());
+
+	    // Deseleccionar los elementos deshabilitados por índice
+	    disabledIndexes.forEach(index -> listViewProcrastinationModules.getSelectionModel().clearSelection(index));
+	    
+	    for (CourseModule cm: listViewProcrastinationModules.getSelectionModel().getSelectedItems()) System.out.println(cm.getModuleName());
 	}
 
 	public ListView<CourseModule> getListViewProcrastination() {

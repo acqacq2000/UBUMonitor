@@ -99,10 +99,16 @@ public class PopulateCourseContent {
 			System.out.println("get type " + module.getModuleType());
 			System.out.println("JSON\n" + jsonObject.toString(6));
 			try {
-				module.setTimeOpened(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
+				if (jsonObject.getJSONArray("dates").getJSONObject(0).getString("label").equalsIgnoreCase("Opened:"))
+					module.setTimeOpened(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
+				else if (jsonObject.getJSONArray("dates").getJSONObject(0).getString("label").equalsIgnoreCase("Closed:"))
+					module.setTimeDue(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
 			}catch(JSONException e) {}
 			try {
-				module.setTimeDue(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(1).getLong("timestamp")));
+				if (jsonObject.getJSONArray("dates").getJSONObject(1).getString("label").equalsIgnoreCase("Opened:"))
+					module.setTimeOpened(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
+				else if (jsonObject.getJSONArray("dates").getJSONObject(1).getString("label").equalsIgnoreCase("Closed:"))
+					module.setTimeDue(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
 			}catch(JSONException e) {}	
 
 			System.out.println("La tarea " + module.getModuleName() + " abrió el " + module.getTimeOpened() + " y cerró el " + module.getTimeDue());
