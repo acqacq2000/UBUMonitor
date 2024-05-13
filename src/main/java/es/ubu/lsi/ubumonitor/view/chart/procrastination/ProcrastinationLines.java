@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.controlsfx.control.CheckComboBox;
 
 import es.ubu.lsi.ubumonitor.controllers.MainController;
+import es.ubu.lsi.ubumonitor.controllers.SelectionProcrastinationController.SeparatorComponentEvent;
 import es.ubu.lsi.ubumonitor.model.ComponentEvent;
 import es.ubu.lsi.ubumonitor.model.CourseModule;
 import es.ubu.lsi.ubumonitor.model.EnrolledUser;
@@ -56,6 +57,8 @@ public class ProcrastinationLines<E> extends Plotly {
         List<EnrolledUser> users = getSelectedEnrolledUser();
         List<CourseModule> modules = new ArrayList<>(listViewProcrastination.getSelectionModel().getSelectedItems());
         List<ComponentEvent> componentsEvents = new ArrayList<>(listViewProcrastinationEvent.getCheckModel().getCheckedItems());
+        componentsEvents.removeIf(event -> event instanceof SeparatorComponentEvent);
+
 
         List<Event> events = componentsEvents.stream().map(ComponentEvent::getEventName).collect(Collectors.toList());
 
@@ -111,7 +114,6 @@ public class ProcrastinationLines<E> extends Plotly {
         // Crear listas para almacenar los valores de las coordenadas x, y y alturas
         JSArray userNames = new JSArray();
         JSArray customdata = new JSArray();
-		JSArray moduleEventNames = new JSArray();
         JSArray heights = new JSArray();
 		JSArray registros = new JSArray();
         JSArray colorBar = new JSArray();
@@ -127,6 +129,7 @@ public class ProcrastinationLines<E> extends Plotly {
         
         // Iterar sobre cada usuario y calcular la altura total
         for (TryInformation tryInfo : moduleEventTries) {
+        	System.out.println("TRY_INFO: " + tryInfo.toString() + "alturaTotal: " + alturaTotal);
         	JSArray datos = new JSArray(); //USUARIO, MODULO, EVENTO, TIEMPO, TIEMPO_ACTUAL
             // Obtener el usuario
             EnrolledUser user = tryInfo.user;
@@ -140,20 +143,15 @@ public class ProcrastinationLines<E> extends Plotly {
             
             // Agregar el evento
             datos.addWithQuote(I18n.get(event));
-            
-            if (!moduleEventNames.contains(module.getModuleName() + "<br>" + I18n.get(event))) {
-            	moduleEventNames.addWithQuote(module.getModuleName() + "<br>" + I18n.get(event));
-            	
-            }
 
             // Calcular la altura total
             //long totalHeight = module.getTimeOpened().getEpochSecond() - tryInfo.getFechaSubida().toEpochSecond();
             long totalHeightSeconds = 0;
-            if (alturaAnterior == 0) {
-	            totalHeightSeconds = tryInfo.getFechaSubida().toEpochSecond() - module.getTimeOpened().getEpochSecond();
-            }else {
+            if (user.equals(userAnterior)) {
             	alturaTotal = tryInfo.getFechaSubida().toEpochSecond() - module.getTimeOpened().getEpochSecond();
-	            totalHeightSeconds = tryInfo.getFechaSubida().toEpochSecond() - alturaAnterior;
+	            totalHeightSeconds = tryInfo.getFechaSubida().toEpochSecond() - module.getTimeOpened().getEpochSecond() - alturaAnterior;
+            }else {
+	            totalHeightSeconds = tryInfo.getFechaSubida().toEpochSecond() - module.getTimeOpened().getEpochSecond();
             }
                         
         	heights.add(totalHeightSeconds);
@@ -180,9 +178,7 @@ public class ProcrastinationLines<E> extends Plotly {
 	        	datos.addWithQuote(String.format("%02dh %02dm %02ds", hours, minutes, seconds));
 	        	datos.addWithQuote(String.format("%02dh %02dm %02ds", hoursActual, minutesActual, secondsActual));
             }
-	        
-	        System.out.println("USUARIO:" + user + ", ANTERIOR: " + userAnterior + ", IGUALES: " + user.equals(userAnterior) + ", CLARITO: " + clarito);
-	        
+	        	        
 	        Color c = colors.get(module);
 	        if(user.equals(userAnterior)) {
 	        	clarito = !clarito;
@@ -196,10 +192,19 @@ public class ProcrastinationLines<E> extends Plotly {
 	        	clarito = false;
 	        }
 	        
+	        System.out.println("USUARIO:" + user + ", ANTERIOR: " + userAnterior + ", IGUALES: " + user.equals(userAnterior) + ", CLARITO: " + clarito);
+	        
 	        colorBar.addWithQuote(String.format("'rgba(%d,%d,%d,1.0)'", c.getRed(),c.getGreen(),c.getBlue()));
 			colorBorderBar.addWithQuote(String.format("'#%02x%02x%02x'", 0, 0, 0));
 	        
-	        if(user.equals(userAnterior)) numeroIntentos++; else numeroIntentos = 1;
+	        if(user.equals(userAnterior)) {
+	        	numeroIntentos++; 
+        	}else { 
+        		numeroIntentos = 1; 
+        		alturaTotal = 0;
+        		alturaAnterior = 0;
+        	}
+	        alturaAnterior = totalHeightSeconds;
 	        
 	        if(alturaTotal == 0) {
 	        	registros.addWithQuote("<b>--------------------INTENTO Nº" + numeroIntentos + "--------------------</b> <br><br>"
@@ -220,8 +225,6 @@ public class ProcrastinationLines<E> extends Plotly {
 	        
 	        	        
 	        userAnterior = user;
-	        alturaAnterior = totalHeightSeconds;
-
 	        customdata.add(datos);  
         }
         
@@ -230,8 +233,6 @@ public class ProcrastinationLines<E> extends Plotly {
 		//System.out.println("COLOR BORDER BAR:" + colorBorderBar);
         
         //System.out.println(customdata);
-        System.out.println(moduleEventNames);
-
 
         // Crear la traza para el módulo actual
         JSObject trace = new JSObject();

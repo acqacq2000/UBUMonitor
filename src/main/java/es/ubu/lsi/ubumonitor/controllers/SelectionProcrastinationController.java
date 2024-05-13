@@ -29,6 +29,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
@@ -191,9 +193,19 @@ public class SelectionProcrastinationController {
 					setText(null);
 					setGraphic(null);
 				} else {
-					setText(courseModule.getModuleName() + " --> " + courseModule.getTimeOpened());
+					if(courseModule.getTimeOpened() == null) {
+						setText(courseModule.getModuleName() + " (Sin fecha apertura)");
+						setTextFill(Color.GRAY);
+	                    setFont(Font.font("System", FontPosture.ITALIC, 12)); // Establece el estilo en cursiva
+	                    setDisable(true);
 
-					setTextFill(courseModule.isVisible() ? Color.BLACK : Color.GRAY);
+					}else {
+						setText(courseModule.getModuleName() + " --> " + courseModule.getTimeOpened());
+						setTextFill(courseModule.isVisible() ? Color.BLACK : Color.GRAY);
+	                    setFont(Font.getDefault()); // Restaura la fuente predeterminada si no es nula
+	                    setDisable(false);
+					}
+
 
 					try {
 						Image image = new Image(AppInfo.IMG_DIR + courseModule.getModuleType()
@@ -228,7 +240,17 @@ public class SelectionProcrastinationController {
 	
 
 	public void selectAllAssignmentsAndQuizzes() {
-		listViewProcrastinationModules.getSelectionModel().selectAll();
+		// Seleccionar todos los elementos
+	    listViewProcrastinationModules.getSelectionModel().selectAll();
+
+	    // Obtener los índices de los elementos deshabilitados
+	    List<Integer> disabledIndexes = listViewProcrastinationModules.getItems().stream()
+	            .filter(module -> module.getTimeOpened() == null)
+	            .map(module -> listViewProcrastinationModules.getItems().indexOf(module))
+	            .collect(Collectors.toList());
+
+	    // Deseleccionar los elementos deshabilitados por índice
+	    disabledIndexes.forEach(index -> listViewProcrastinationModules.getSelectionModel().clearSelection(index));
 	}
 
 	public ListView<CourseModule> getListViewProcrastination() {
