@@ -6,6 +6,7 @@ import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -148,16 +149,20 @@ public class ProcrastinationBars<E> extends Plotly {
         boolean clarito = false;
         EnrolledUser userAnterior = null;
         int numeroIntentos = 1;
-        long alturaAnterior = 0;
-        long alturaTotal = 0;
+        long tiempoEventoAnterior = 0;
+        long tiempoDesdeApertura = 0;
         
         
         // Iterar sobre cada usuario y calcular la altura total
         for (TryInformation tryInfo : moduleEventTries) {
-        	System.out.println("TRY_INFO: " + tryInfo.toString() + "alturaTotal: " + alturaTotal);
-        	JSArray datos = new JSArray(); //USUARIO, MODULO, EVENTO, TIEMPO, TIEMPO_ACTUAL
+        	        	
+        	System.out.println("TRY_INFO: tiempoEventoAnterior: " + tiempoEventoAnterior);
+        	JSArray datos = new JSArray(); //USUARIO, MODULO, EVENTO, TIEMPO_TOTAL, (TIEMPO_ACTUAL), INSTANTE
             // Obtener el usuario
             EnrolledUser user = tryInfo.user;
+            
+            System.out.println("UserAnterior: " + userAnterior + ", user : " + user);
+        	//if(userAnterior != user) userAnterior = null; 
 
             // Agregar el usuario a la lista de coordenadas x
             userNames.addWithQuote(user.getFullName());
@@ -171,39 +176,46 @@ public class ProcrastinationBars<E> extends Plotly {
 
             // Calcular la altura total
             //long totalHeight = module.getTimeOpened().getEpochSecond() - tryInfo.getFechaSubida().toEpochSecond();
-            long totalHeightSeconds = 0;
+            long diferenciaTiempoEntreEventos = 0;
             if (user.equals(userAnterior)) {
-            	alturaTotal = tryInfo.getFechaSubida().toEpochSecond() - module.getTimeOpened().getEpochSecond();
-	            totalHeightSeconds = tryInfo.getFechaSubida().toEpochSecond() - module.getTimeOpened().getEpochSecond() - alturaAnterior;
+            	tiempoDesdeApertura = tryInfo.getFechaSubida().toEpochSecond() - module.getTimeOpened().getEpochSecond();
+	            diferenciaTiempoEntreEventos = tryInfo.getFechaSubida().toEpochSecond() - module.getTimeOpened().getEpochSecond() - tiempoEventoAnterior;
+	            
+	            heights.add(diferenciaTiempoEntreEventos);
+	            
             }else {
-            	System.out.println("Para cuando falle: " + tryInfo.toString() + " y " + module.getModuleName() + module.getTimeOpened());
-	            totalHeightSeconds = tryInfo.getFechaSubida().toEpochSecond() - module.getTimeOpened().getEpochSecond();
+            	tiempoDesdeApertura = tryInfo.getFechaSubida().toEpochSecond() - module.getTimeOpened().getEpochSecond();
+            	
+            	heights.add(tiempoDesdeApertura);
             }
+            System.out.println("tiempoEventoAnterior: " + tiempoEventoAnterior);
                         
-        	heights.add(totalHeightSeconds);
 	        // Convertir segundos a horas, minutos y segundos
-	        long hours = totalHeightSeconds / 3600;
-	        long minutes = (totalHeightSeconds % 3600) / 60;
-	        long seconds = totalHeightSeconds % 60;
+	        long horasActuales = diferenciaTiempoEntreEventos / 3600;
+	        long minutosActuales = (diferenciaTiempoEntreEventos % 3600) / 60;
+	        long segundosActuales = diferenciaTiempoEntreEventos % 60;
 	        
-	        long hoursActual = alturaTotal / 3600;
-	        long minutesActual = (alturaTotal % 3600) / 60;
-	        long secondsActual = alturaTotal % 60;
+	        long horasTotales = tiempoDesdeApertura / 3600;
+	        long minutosTotales = (tiempoDesdeApertura % 3600) / 60;
+	        long segundosTotales = tiempoDesdeApertura % 60;
 	
-	        if (hours >= 24 || hours <= -24 || hoursActual >= 24 || hoursActual <= -24) {
-	            long days = hours / 24;
-	            long daysActual = hoursActual / 24;
-	            hours = hours % 24;
-	            hoursActual = hoursActual % 24;
+	        if (horasActuales >= 24 || horasActuales <= -24 || horasTotales >= 24 || horasTotales <= -24) {
+	            long diasActuales = horasActuales / 24;
+	            long diasTotales = horasTotales / 24;
+	            horasActuales = horasActuales % 24;
+	            horasTotales = horasTotales % 24;
 	            //datos.addWithQuote(String.format("%d días %02d:%02d:%02d", days, hours, minutes, seconds));
-	            datos.addWithQuote(String.format("%dd %02dh %02dm %02ds", days, hours, minutes, seconds));
-	            datos.addWithQuote(String.format("%dd %02dh %02dm %02ds", daysActual, hoursActual, minutesActual, secondsActual));
-
+	            datos.addWithQuote(String.format("%dd %02dh %02dm %02ds", diasTotales, horasTotales, minutosTotales, segundosTotales));
+	            datos.addWithQuote(String.format("%dd %02dh %02dm %02ds", diasActuales, horasActuales, minutosActuales, segundosActuales));
+	            
 	        } else {
 	        	//datos.addWithQuote(String.format("%02d:%02d:%02d", hours, minutes, seconds));
-	        	datos.addWithQuote(String.format("%02dh %02dm %02ds", hours, minutes, seconds));
-	        	datos.addWithQuote(String.format("%02dh %02dm %02ds", hoursActual, minutesActual, secondsActual));
+	        	datos.addWithQuote(String.format("%02dh %02dm %02ds", horasTotales, minutosTotales, segundosTotales));
+	        	datos.addWithQuote(String.format("%02dh %02dm %02ds", horasActuales, minutosActuales, segundosActuales));
             }
+
+	        
+	        datos.addWithQuote(tryInfo.getFechaSubida().withZoneSameInstant(ZoneId.of("Europe/Madrid")).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
 	        	        
 	        Color c = colors.get(new Pair<>(module,event));
 	        if(user.equals(userAnterior)) {
@@ -218,33 +230,36 @@ public class ProcrastinationBars<E> extends Plotly {
 	        	clarito = false;
 	        }
 	        
-	        System.out.println("USUARIO:" + user + ", ANTERIOR: " + userAnterior + ", IGUALES: " + user.equals(userAnterior) + ", CLARITO: " + clarito);
+	        //System.out.println("USUARIO:" + user + ", ANTERIOR: " + userAnterior + ", IGUALES: " + user.equals(userAnterior) + ", CLARITO: " + clarito);
 	        
 	        colorBar.addWithQuote(String.format("'rgba(%d,%d,%d,1.0)'", c.getRed(),c.getGreen(),c.getBlue()));
 	        
-	        if(user.equals(userAnterior)) {
+        	System.out.println("Usuarios iguales: " + user.equals(userAnterior));
+	        if(user.equals(userAnterior))
 	        	numeroIntentos++; 
-        	}else { 
+        	else
         		numeroIntentos = 1; 
-        		alturaTotal = 0;
-        		alturaAnterior = 0;
-        	}
-	        alturaAnterior = totalHeightSeconds;
+        	
+        	tiempoEventoAnterior = tiempoDesdeApertura;
+
 	        
-	        if(alturaTotal == 0) {
+	        
+	        if(numeroIntentos == 1) {
 	        	registros.addWithQuote("<b>--------------------INTENTO Nº" + numeroIntentos + "--------------------</b> <br><br>"
         			+ " <b>Tiempo transcurrido (desde apertura):</b> <br> %{customdata[3]} <br><br>"
 					+ " <b>Modulo:</b> <br> %{customdata[1]} <br><br>"
 					+ " <b>Evento:</b> <br> %{customdata[2]} <br><br>"
-					+ " <b>Alumno:</b> <br> %{customdata[0]}"
+					+ " <b>Alumno:</b> <br> %{customdata[0]} <br><br>"
+					+ " <b>Instante: </b> <br> %{customdata[5]}"
 					+ "<extra></extra>");
 	        }else {
 	        	registros.addWithQuote("<b>--------------------INTENTO Nº" + numeroIntentos + "--------------------</b> <br><br>"
-	        			+ " <b>Tiempo transcurrido (desde apertura):</b> <br> %{customdata[4]} <br><br>"
-	        			+ " <b>Tiempo transcurrido (desde evento anterior):</b> <br> %{customdata[3]} <br><br>"
+	        			+ " <b>Tiempo transcurrido (desde apertura):</b> <br> %{customdata[3]} <br><br>"
+	        			+ " <b>Tiempo transcurrido (desde evento anterior):</b> <br> %{customdata[4]} <br><br>"
 						+ " <b>Modulo:</b> <br> %{customdata[1]} <br><br>"
 						+ " <b>Evento:</b> <br> %{customdata[2]} <br><br>"
-						+ " <b>Alumno:</b> <br> %{customdata[0]}"
+						+ " <b>Alumno/a:</b> <br> %{customdata[0]} <br><br>"
+						+ " <b>Instante: </b> <br> %{customdata[5]}"
 						+ "<extra></extra>");
 	        }
 	        
@@ -264,8 +279,7 @@ public class ProcrastinationBars<E> extends Plotly {
         trace.put("type", "'bar'");
         trace.putWithQuote("name", "<b>" + module.getModuleName() + "</b> <br> \t\t" + I18n.get(event));
         trace.put("x", userNames);
-        
-        System.out.println("Heights: " + heights);
+        //System.out.println("Heights: " + heights);
         JSArray convertedHeights = new JSArray();
         if (maxTotalHeightSeconds >= 86400) {
             unit = "Dias";
@@ -304,18 +318,29 @@ public class ProcrastinationBars<E> extends Plotly {
 
     @Override
     public void createLayout(JSObject layout) {
-    }
-    
-    
-    @Override
-    public String getXAxisTitle() {
+    	JSObject xaxis = new JSObject();
+		defaultAxisValues(xaxis, getXAxisTitle(), null);
 
-		return MessageFormat.format(super.getXAxisTitle(), "Eje X");
-	}
+		JSObject yaxis = new JSObject();
+		defaultAxisValues(yaxis, getYAxisTitle(), null);
+
+		layout.put("xaxis", xaxis);
+		layout.put("yaxis", yaxis);
+
+    }
 
 	@Override
 	public String getYAxisTitle() {
-
-		return MessageFormat.format(super.getXAxisTitle(), "Eje Y");
+		if (maxTotalHeightSeconds > 0)
+			return "<b>" + "Número de " + unit.toUpperCase() + " transcurridos." + "</b>";
+		else return "";
+	}
+    
+    
+	@Override
+	public String getXAxisTitle() {
+		if (maxTotalHeightSeconds > 0)
+			return "<b>" + "Alumnos/as" + "</b>";
+		else return "";
 	}
 }

@@ -1,5 +1,7 @@
 package es.ubu.lsi.ubumonitor.controllers;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -202,7 +204,8 @@ public class SelectionProcrastinationController {
 	                    setDisable(true);
 
 					}else {
-						setText(courseModule.getModuleName() + " --> " + courseModule.getTimeOpened());
+
+						setText(courseModule.getModuleName() + " (" + courseModule.getTimeOpened().atZone(ZoneId.of("Europe/Madrid")).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) + ")");
 						setTextFill(courseModule.isVisible() ? Color.BLACK : Color.GRAY);
 	                    setFont(Font.getDefault()); // Restaura la fuente predeterminada si no es nula
 	                    setDisable(false);
