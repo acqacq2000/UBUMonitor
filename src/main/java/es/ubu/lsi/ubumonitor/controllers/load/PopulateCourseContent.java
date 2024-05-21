@@ -94,25 +94,65 @@ public class PopulateCourseContent {
 		module.setModplural(jsonObject.optString(Constants.MODPLURAL));
 		module.setIndent(jsonObject.optInt(Constants.INDENT));
 
-		//Added
-		if (TryInformation.EventProcrastincationModuleTypesSubgroup.contains(module.getModuleType())){
+		// Added
+		if (TryInformation.EventProcrastincationModuleTypesSubgroup.contains(module.getModuleType())) {
 			System.out.println("get type " + module.getModuleType());
 			System.out.println("JSON\n" + jsonObject.toString(6));
-			try {
-				if (jsonObject.getJSONArray("dates").getJSONObject(0).getString("label").equalsIgnoreCase("Opened:"))
-					module.setTimeOpened(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
-				else if (jsonObject.getJSONArray("dates").getJSONObject(0).getString("label").equalsIgnoreCase("Closed:"))
-					module.setTimeDue(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
-			}catch(JSONException e) {}
-			try {
-				if (jsonObject.getJSONArray("dates").getJSONObject(1).getString("label").equalsIgnoreCase("Opened:"))
-					module.setTimeOpened(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
-				else if (jsonObject.getJSONArray("dates").getJSONObject(1).getString("label").equalsIgnoreCase("Closed:"))
-					module.setTimeDue(Instant.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
-			}catch(JSONException e) {}	
 
-			System.out.println("La tarea " + module.getModuleName() + " abrió el " + module.getTimeOpened() + " y cerró el " + module.getTimeDue());
-			
+			try {
+
+				if (module.getModuleType().equals(ModuleType.ASSIGNMENT)) {
+
+					if (jsonObject.getJSONArray("dates").length() == 1) {
+
+						if (jsonObject.getJSONArray("dates").getJSONObject(0).getString("dataid")
+								.equalsIgnoreCase("allowsubmissionsfromdate")) {
+
+							module.setTimeOpened(Instant.ofEpochSecond(
+									jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
+
+						} else if (jsonObject.getJSONArray("dates").getJSONObject(0).getString("dataid")
+								.equalsIgnoreCase("duedate")) {
+
+							module.setTimeDue(Instant.ofEpochSecond(
+									jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
+						}
+					} else if (jsonObject.getJSONArray("dates").length() == 2) {
+						module.setTimeOpened(Instant
+								.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
+						module.setTimeDue(Instant
+								.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(1).getLong("timestamp")));
+					}
+
+				} else if (module.getModuleType().equals(ModuleType.QUIZ)) {
+					
+					if (jsonObject.getJSONArray("dates").length() == 1) {
+
+						if (jsonObject.getJSONArray("dates").getJSONObject(0).getString("dataid")
+								.equalsIgnoreCase("timeopen")) {
+
+							module.setTimeOpened(Instant.ofEpochSecond(
+									jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
+
+						} else if (jsonObject.getJSONArray("dates").getJSONObject(0).getString("dataid")
+								.equalsIgnoreCase("timeclose")) {
+
+							module.setTimeDue(Instant.ofEpochSecond(
+									jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
+						}
+					} else if (jsonObject.getJSONArray("dates").length() == 2) {
+						module.setTimeOpened(Instant
+								.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(0).getLong("timestamp")));
+						module.setTimeDue(Instant
+								.ofEpochSecond(jsonObject.getJSONArray("dates").getJSONObject(1).getLong("timestamp")));
+					}
+				}
+
+			} catch (JSONException e) {System.err.print("Error capturando fechas --> " + e.getStackTrace());}
+
+			System.out.println("La tarea " + module.getModuleName() + " abrió el " + module.getTimeOpened()
+			+ " y cerró el " + module.getTimeDue());
+
 		}
 
 		return module;

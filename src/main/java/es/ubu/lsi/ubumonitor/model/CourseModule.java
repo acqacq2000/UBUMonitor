@@ -102,6 +102,10 @@ public class CourseModule implements Serializable {
 	public CourseModule(int id) {
 		setCmid(id);
 		activitiesCompletion = new HashMap<>();
+		
+		//Inicializo a null
+		timeOpened = null;
+		timeDue = null;
 	}
 
 	public String getUrl() {
