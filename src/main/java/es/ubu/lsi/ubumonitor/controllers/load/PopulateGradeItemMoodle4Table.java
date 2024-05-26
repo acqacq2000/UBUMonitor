@@ -191,6 +191,8 @@ public class PopulateGradeItemMoodle4Table extends PopulateGradeItemTableAbstrac
 				}
 			}
 		}
+		
+		System.out.println("Nota: " + grade + ", Usuario: " + enrolledUser);
 
 		gradeItem.addUserGrade(enrolledUser, grade);
 

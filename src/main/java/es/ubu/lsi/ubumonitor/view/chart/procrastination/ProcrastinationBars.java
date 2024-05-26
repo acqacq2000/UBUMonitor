@@ -56,10 +56,14 @@ public class ProcrastinationBars<E> extends Plotly {
 
         useRangeDate = true;
         useLegend = true;
+        System.out.println("Constructor");
     }
 
     @Override
     public void createData(JSArray data) {
+    	System.out.println("Habilito el checkbox");
+		listViewProcrastinationEvent.setDisable(false);
+		
         List<EnrolledUser> users = getSelectedEnrolledUser();
         List<CourseModule> modules = new ArrayList<>(listViewProcrastination.getSelectionModel().getSelectedItems());
         if (modules.size() > 0 && modules.get(0) != null) 
@@ -80,7 +84,7 @@ public class ProcrastinationBars<E> extends Plotly {
         }).thenComparingLong(tryInfo -> tryInfo.getFechaSubida().toEpochSecond()));
         
         System.out.println("-----------------------------------------------------");
-        for (TryInformation tri: tries) System.out.println(tri);
+        //for (TryInformation tri: tries) System.out.println(tri);
         System.out.println("-----------------------------------------------------");
 
         List<Pair<CourseModule, Event>> keys = new ArrayList<>();
@@ -249,7 +253,7 @@ public class ProcrastinationBars<E> extends Plotly {
         			+ " <b>Tiempo transcurrido (desde apertura):</b> <br> %{customdata[3]} <br><br>"
 					+ " <b>Modulo:</b> <br> %{customdata[1]} <br><br>"
 					+ " <b>Evento:</b> <br> %{customdata[2]} <br><br>"
-					+ " <b>Alumno:</b> <br> %{customdata[0]} <br><br>"
+					+ " <b>Alumno/a:</b> <br> %{customdata[0]} <br><br>"
 					+ " <b>Instante: </b> <br> %{customdata[5]}"
 					+ "<extra></extra>");
 	        }else {
@@ -333,14 +337,12 @@ public class ProcrastinationBars<E> extends Plotly {
 	public String getYAxisTitle() {
 		if (maxTotalHeightSeconds > 0)
 			return "<b>" + "Número de " + unit.toUpperCase() + " transcurridos." + "</b>";
-		else return "";
+		else return "<b>Tiempo transcurrido</b>";
 	}
     
     
 	@Override
 	public String getXAxisTitle() {
-		if (maxTotalHeightSeconds > 0)
-			return "<b>" + "Alumnos/as" + "</b>";
-		else return "";
+		return "<b>" + "Alumnos/as" + "</b>";
 	}
 }
