@@ -49,15 +49,28 @@ public abstract class Plotly extends Chart {
 		plot.put("data", data);
 		plot.put("layout", layout);
 		plot.put("frames", frames);
+		
+		
 		LOGGER.debug("Plotly:{}\nOptions plotly:{}", plot, options);
 		try {
-			webViewChartsEngine.executeScript("updatePlotly(" + plot + "," + options + ")");
-		} catch (JSException e) {
-			
-			LOGGER.debug("Probably updating too fast plotly: {}", e);
-			
+	        webViewChartsEngine.executeScript("updatePlotly(" + plot + "," + options + ")");
+	    } catch (JSException e) {
+	        System.out.println("Mensaje de error: " + e.getMessage());
+	        System.out.println("Mensaje de error localizado: " + e.getLocalizedMessage());
+	        System.out.println("Causa del error: " + e.getCause());
+	        System.out.println("Clase del error: " + e.getClass());
 
-		}
+	        for (StackTraceElement element : e.getStackTrace()) {
+	            System.out.println("Archivo: " + element.getFileName());
+	            System.out.println("Clase: " + element.getClassName());
+	            System.out.println("Método: " + element.getMethodName());
+	            System.out.println("Línea: " + element.getLineNumber());
+	            System.out.println("---------------");
+	        }
+
+	        e.printStackTrace();
+	        LOGGER.debug("Probably updating too fast plotly: {}", e);
+	    }
 
 	}
 

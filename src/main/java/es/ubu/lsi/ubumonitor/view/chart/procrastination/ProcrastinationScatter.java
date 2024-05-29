@@ -200,12 +200,13 @@ public void tiempoMaximo (List<TryInformation> tries) {
 	
 public JSObject createTrace(CourseModule module, List<TryInformation> tries) {
     // Crear el mapa que almacenará las diferencias de tiempo para cada usuario
-    Map<EnrolledUser, Set<Map.Entry<Long, Double>>> mapa = new HashMap<>();
+    //Map<EnrolledUser, Set<Map.Entry<Long, Double>>> mapa = new HashMap<>();
     
     Map<EnrolledUser, Set<List<Object>>> tiempoIntentoCuestionario = new HashMap<>();
     
     JSArray x = new JSArray();
     JSArray y = new JSArray();
+    JSArray z = new JSArray();
     JSArray registros = new JSArray();
     JSArray customdata = new JSArray();
 
@@ -230,6 +231,8 @@ public JSObject createTrace(CourseModule module, List<TryInformation> tries) {
                         (nextTryInfo.getComponentEvent().getEventName().equals(Event.QUIZ_ATTEMPT_SUBMITTED) || 
                          nextTryInfo.getComponentEvent().getEventName().equals(Event.QUIZ_ATTEMPT_ABANDONED))) {
                     	
+                    	long tiempoTranscurridoDesdeApertura = tryInfo.getFechaSubida().toEpochSecond() - module.getTimeOpened().getEpochSecond();
+                    	
                         // Calcular la diferencia de tiempo entre los eventos
                         long tiempoInicio = tryInfo.getFechaSubida().toEpochSecond();
                         long tiempoFin = nextTryInfo.getFechaSubida().toEpochSecond();
@@ -249,7 +252,7 @@ public JSObject createTrace(CourseModule module, List<TryInformation> tries) {
                             double notaMaxima = calificacion.getGrademax();
                             double notaMinima = calificacion.getGrademin();
                             // Crear la entrada y agregarla al mapa
-                            List<Object> entry = Arrays.asList(tiempoTranscurrido, nota, notaMaxima, notaMinima);
+                            List<Object> entry = Arrays.asList(tiempoTranscurridoDesdeApertura, tiempoTranscurrido, nota, notaMaxima, notaMinima);
                             tiempoIntentoCuestionario.computeIfAbsent(user, k -> new HashSet<>()).add(entry);
                         }
                         // Romper el ciclo interno una vez que se haya encontrado el evento "eventoTerminado"
@@ -269,11 +272,11 @@ public JSObject createTrace(CourseModule module, List<TryInformation> tries) {
             for (List<Object> intento : intentos) {
             	
                 datos = new JSArray();
-            	
-                long tiempoTranscurrido = (Long) intento.get(0);
-                double nota = (Double) intento.get(1);
-                double notaMaxima = (Double) intento.get(2);
-                double notaMinima = (Double) intento.get(3);
+            	long tiempoTranscurridoDesdeApertura = (Long) intento.get(0);
+                long tiempoTranscurrido = (Long) intento.get(1);
+                double nota = (Double) intento.get(2);
+                double notaMaxima = (Double) intento.get(3);
+                double notaMinima = (Double) intento.get(4);
                 
                 String tiempoFormateado = "";
                 
@@ -281,7 +284,7 @@ public JSObject createTrace(CourseModule module, List<TryInformation> tries) {
             	long horasTotales = tiempoTranscurrido / 3600;
     	        long minutosTotales = (tiempoTranscurrido % 3600) / 60;
     	        long segundosTotales = tiempoTranscurrido % 60;
-    	
+    	        
     	        if (horasTotales >= 24 || horasTotales <= -24) {
     	            long diasTotales = horasTotales / 24;
     	            horasTotales = horasTotales % 24;
@@ -311,14 +314,50 @@ public JSObject createTrace(CourseModule module, List<TryInformation> tries) {
         		    unit = "Segundos";
         		    tiempoTranscurridoAdaptado = (double) tiempoTranscurrido;
         		}
+        		
+        		long horasTotalesDesdeApertura = tiempoTranscurridoDesdeApertura / 3600;
+    	        long minutosTotalesDesdeApertura = (tiempoTranscurridoDesdeApertura % 3600) / 60;
+    	        long segundosTotalesDesdeApertura = tiempoTranscurridoDesdeApertura % 60;
+    	
+    	        if (horasTotalesDesdeApertura >= 24 || horasTotalesDesdeApertura <= -24) {
+    	            long diasTotalesDesdeApertura = horasTotalesDesdeApertura / 24;
+    	            horasTotalesDesdeApertura = horasTotalesDesdeApertura % 24;
+    	            //datos.addWithQuote(String.format("%d días %02d:%02d:%02d", days, hours, minutes, seconds));
+    	            tiempoFormateado = String.format("%dd %02dh %02dm %02ds", diasTotalesDesdeApertura, horasTotalesDesdeApertura, minutosTotalesDesdeApertura, segundosTotalesDesdeApertura);
+    	            
+    	        } else {
+    	        	//datos.addWithQuote(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+    	        	tiempoFormateado = String.format("%02dh %02dm %02ds", horasTotalesDesdeApertura, minutosTotalesDesdeApertura, segundosTotalesDesdeApertura);
+                }    
+    	        
+        		double tiempoTranscurridoAdaptadoDesdeApertura = tiempoTranscurridoDesdeApertura; // Inicialmente lo asignamos al mismo valor
 
+        		if (maxTotalHeightSeconds >= 86400) {
+        		    unit = "Días";
+        		    // Convertir las alturas a días
+        		    tiempoTranscurridoAdaptadoDesdeApertura = tiempoTranscurridoDesdeApertura / 86400.0;
+        		} else if (maxTotalHeightSeconds >= 3600) {
+        		    unit = "Horas";
+        		    // Convertir las alturas a horas
+        		    tiempoTranscurridoAdaptadoDesdeApertura = tiempoTranscurridoDesdeApertura / 3600.0;
+        		} else if (maxTotalHeightSeconds >= 60) {
+        		    unit = "Minutos";
+        		    // Convertir las alturas a minutos
+        		    tiempoTranscurridoAdaptadoDesdeApertura = tiempoTranscurridoDesdeApertura / 60.0;
+        		} else {
+        		    unit = "Segundos";
+        		    tiempoTranscurridoAdaptadoDesdeApertura = (double) tiempoTranscurridoDesdeApertura;
+        		}
+    	        
         		// Ahora tiempoTranscurridoAdaptado contiene el valor convertido correctamente en la unidad apropiada
-        		System.out.println("Tiempo transcurrido: " + tiempoTranscurridoAdaptado + " " + unit);
+        		System.out.println("Tiempo transcurrido: " + tiempoTranscurridoAdaptadoDesdeApertura + " " + unit);
 
     	        x.addWithQuote(tiempoTranscurridoAdaptado);
 		        y.addWithQuote(nota);
+		        z.addWithQuote(tiempoTranscurridoAdaptadoDesdeApertura);
 		        
 		        // Agregar elementos a datos
+	        	datos.addWithQuote(tiempoTranscurridoAdaptadoDesdeApertura);
 		        datos.addWithQuote(tiempoFormateado);
 		        datos.addWithQuote(user.getFullName());
 		        datos.addWithQuote(module.getModuleName());
@@ -330,7 +369,8 @@ public JSObject createTrace(CourseModule module, List<TryInformation> tries) {
 		        System.out.println("CustomData: " + customdata);
 		        
 		        registros.addWithQuote(
-		                  " <b>Tiempo transcurrido (desde comienzo):</b> <br> %{customdata[0]} <br><br>"
+		                  " <b>Tiempo transcurrido (desde apertura):</b> <br> %{customdata[0]} <br><br>"
+		        		+ " <b>Tiempo transcurrido (desde comienzo):</b> <br> %{customdata[0]} <br><br>"
 						+ " <b>Alumno/a:</b> <br> %{customdata[1]} <br><br>"
 		                + " <b>Modulo:</b> <br> %{customdata[2]} <br><br>"
 		                + " <b>Nota:</b> <br> %{customdata[3]} <br><br>"
@@ -362,7 +402,7 @@ public JSObject createTrace(CourseModule module, List<TryInformation> tries) {
 	        	Map.Entry<Long, Double> timeAndGrade = new AbstractMap.SimpleEntry<>(timeDifference, nota);
 
 		        // Agregar el par al mapa
-		        mapa.computeIfAbsent(user, k -> new HashSet<>()).add(timeAndGrade);
+		        //mapa.computeIfAbsent(user, k -> new HashSet<>()).add(timeAndGrade);
 		        
 	        	String tiempoFormateado = "";
                 
@@ -433,24 +473,30 @@ public JSObject createTrace(CourseModule module, List<TryInformation> tries) {
 	}
     
 
-    System.out.println("Gradeitems: " + calificaciones);
+    //System.out.println("Gradeitems: " + calificaciones);
 
-    System.out.println("Mapa: " + mapa);
+    //System.out.println("Mapa: " + mapa);
 
     JSObject trace = new JSObject();
 
     JSObject marker = new JSObject();
-    marker.put("color", rgb(module));
+    //marker.put("color", rgb(module));
 
-    trace.putWithQuote("name", module.getModuleName());
-    trace.put("type", "'scatter'");
+    //trace.putWithQuote("name", module.getModuleName());
+    trace.put("type", "'scatter3d'");
+    //trace.put("mode", "'markers'");
+    
+    trace.put("x", "[1,2,3]");
+    trace.put("y", "[3,4,5]");
+    trace.put("z", "[6,7,8]");
+    
+    
     trace.put("mode", "'markers'");
-    trace.put("x", x);
-    trace.put("y", y);
     trace.put("marker", marker);
-    trace.put("customdata", customdata);
-    trace.put("hovertemplate", registros);
+    //trace.put("customdata", customdata);
+    //trace.put("hovertemplate", registros);
 
+    System.out.println("TRACE" + trace);
     return trace;
 }
 
@@ -461,9 +507,18 @@ public JSObject createTrace(CourseModule module, List<TryInformation> tries) {
 
 		JSObject yaxis = new JSObject();
 		defaultAxisValues(yaxis, getYAxisTitle(), null);
+		
+		JSObject zaxis = new JSObject();
+		defaultAxisValues(yaxis, getYAxisTitle(), null);
 
-		layout.put("xaxis", xaxis);
-		layout.put("yaxis", yaxis);
+		JSObject scene = new JSObject();
+		
+		scene.put("xaxis", xaxis);
+		scene.put("yaxis", yaxis);
+		scene.put("zaxis", "{zeroline:false,title:'<b>Nota obtenida</b>',automargin:true}");
+		
+		layout.put("scene", scene);
+		
 	}
 	
 	

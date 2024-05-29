@@ -63,6 +63,11 @@ public class Scatter3DChart extends ClusteringChart {
 		}
 
 		LOGGER.debug("3D series: {}", series);
+		System.out.println("3d: " + series);
+		
+		String htmlCode = (String) getWebEngine().executeScript("document.documentElement.outerHTML");
+		System.out.println(htmlCode);
+		
 		getWebEngine().executeScript("updateChart(" + series + ")");
 	}
 
