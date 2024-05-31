@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.csv.CSVFormat;
@@ -420,11 +421,11 @@ public class ProcrastinationScatter<E> extends Plotly {
 					// en la unidad apropiada
 					System.out.println("Tiempo transcurrido: " + tiempoTranscurridoAdaptadoDesdeApertura + " " + unit);
 
-					if (listViewProcrastinationMetricMode.getValue().equalsIgnoreCase("Medir desde apertura")){
+					if (listViewProcrastinationMetricMode.getValue().equalsIgnoreCase(I18n.get("combobox.measureOpening"))){
 						System.out.println("Seleccionado: Desde apertura");
 						z.addWithQuote(tiempoTranscurridoAdaptado);
 						x.addWithQuote(tiempoTranscurridoAdaptadoDesdeApertura);
-					}else if (listViewProcrastinationMetricMode.getValue().equalsIgnoreCase("Medir desde inicio intento")){
+					}else if (listViewProcrastinationMetricMode.getValue().equalsIgnoreCase(I18n.get("combobox.measureStartAttemp"))){
 						System.out.println("Seleccionado: Desde inicio de intento");
 						x.addWithQuote(tiempoTranscurridoAdaptado);
 						z.addWithQuote(tiempoTranscurridoAdaptadoDesdeApertura);
@@ -446,13 +447,13 @@ public class ProcrastinationScatter<E> extends Plotly {
 					System.out.println("CustomData: " + customdata);
 
 					registros
-					.addWithQuote(" <b>" + I18n.get("text.elapsedTimeTaskOpening") + ":</b> <br> %{customdata[0]} <br><br>"
-							+ " <b>" + I18n.get("text.elapsedTimeStartAttemp") + ":</b> <br> %{customdata[1]}"
-							+ " <b>" + I18n.get("text.student") + ":</b> <br> %{customdata[2]} <br><br>"
-							+ " <b>" + I18n.get("text.module") + ":</b> <br> %{customdata[3]} <br><br>"
-							+ " <b>" + I18n.get("text.grade") + "Nota:</b> <br> %{customdata[4]} <br><br>"
-							+ " <b>" + I18n.get("text.rangeGrade") + ":</b> <br> [%{customdata[5]},%{customdata[6]}] <br><br>"
-							+ " <extra></extra>");
+					.addWithQuote("<b>" + I18n.get("text.elapsedTimeTaskOpening") + ":</b> <br> %{customdata[0]} <br><br>"
+							+ "<b>" + I18n.get("text.elapsedTimeStartAttemp") + ":</b> <br> %{customdata[1]} <br><br>"
+							+ "<b>" + I18n.get("text.student") + ":</b> <br> %{customdata[2]} <br><br>"
+							+ "<b>" + I18n.get("text.module") + ":</b> <br> %{customdata[3]} <br><br>"
+							+ "<b>" + I18n.get("text.grade") + ":</b> <br> %{customdata[4]} <br><br>"
+							+ "<b>" + I18n.get("text.rangeGrade") + ":</b> <br> [%{customdata[5]},%{customdata[6]}] <br><br>"
+							+ "<extra></extra>");
 				}
 
 			}
@@ -552,13 +553,13 @@ public class ProcrastinationScatter<E> extends Plotly {
 					userIds.add(user.getId());
 					
 					registros
-							.addWithQuote(" <b>" + I18n.get("text.elapsedTimeTaskOpening") + ":</b> <br> %{customdata[0]} <br><br>"
-									+ " <b>" + I18n.get("text.elapsedTimeStartAttemp") + ":</b> <br> %{customdata[0]} <i>" + I18n.get("text.startAttempAndTaskOpeningEquals") + "</i><br><br>"
-									+ " <b>" + I18n.get("text.student") + ":</b> <br> %{customdata[1]} <br><br>"
-									+ " <b>" + I18n.get("text.module") + ":</b> <br> %{customdata[2]} <br><br>"
-									+ " <b>" + I18n.get("text.grade") + "Nota:</b> <br> %{customdata[3]} <br><br>"
-									+ " <b>" + I18n.get("text.rangeGrade") + ":</b> <br> [%{customdata[4]},%{customdata[5]}] <br><br>"
-									+ " <extra></extra>");
+							.addWithQuote("<b>" + I18n.get("text.elapsedTimeTaskOpening") + ":</b> <br> %{customdata[0]} <br><br>"
+									+ "<b>" + I18n.get("text.elapsedTimeStartAttemp") + ":</b> <br> %{customdata[0]} <i>" + I18n.get("text.startAttempAndTaskOpeningEquals") + "</i><br><br>"
+									+ "<b>" + I18n.get("text.student") + ":</b> <br> %{customdata[1]} <br><br>"
+									+ "<b>" + I18n.get("text.module") + ":</b> <br> %{customdata[2]} <br><br>"
+									+ "<b>" + I18n.get("text.grade") + ":</b> <br> %{customdata[3]} <br><br>"
+									+ "<b>" + I18n.get("text.rangeGrade") + ":</b> <br> [%{customdata[4]},%{customdata[5]}] <br><br>"
+									+ "<extra></extra>");
 
 				}
 
@@ -649,7 +650,13 @@ public class ProcrastinationScatter<E> extends Plotly {
 	            .add(I18n.get("text.timeSinceOpen"));
 	        moduloMedidaTiempo
             .computeIfAbsent(obj.getNombreModulo(), k -> new LinkedHashSet<>())
+            .add(I18n.get("text.timeSinceOpen") + " (" + I18n.get("text.formatted") + ")");
+	        moduloMedidaTiempo
+            .computeIfAbsent(obj.getNombreModulo(), k -> new LinkedHashSet<>())
             .add(I18n.get("text.timeSinceStartAttemp"));
+	        moduloMedidaTiempo
+            .computeIfAbsent(obj.getNombreModulo(), k -> new LinkedHashSet<>())
+            .add(I18n.get("text.timeSinceStartAttemp") + " (" + I18n.get("text.formatted") + ")");
 	    }
 
 	    // Crear la lista de cabeceras incluyendo intentos
@@ -668,7 +675,6 @@ public class ProcrastinationScatter<E> extends Plotly {
 	    // Definir las cabeceras para cada intento por módulo
 	    for (Map.Entry<String, Set<String>> entry : moduloMedidaTiempo.entrySet()) {
 	        String modulo = entry.getKey();
-	        cabeceras.add(modulo);
 	        /*
 	        int maxIntentos = maxIntentosPorModulo.get(modulo);
 	        for (int i = 1; i <= maxIntentos; i++) {
@@ -680,8 +686,8 @@ public class ProcrastinationScatter<E> extends Plotly {
 	        
 	        cabeceras.add("Intento");
 	        */
-            for (String medida : entry.getValue()) cabeceras.add(medida);
-            cabeceras.add(I18n.get("text.grade"));
+            for (String medida : entry.getValue()) cabeceras.add("(" + modulo + ") - " + medida);
+            cabeceras.add("(" + modulo + ") - " + I18n.get("text.grade"));
 	    }
 	    
 	    Map<String, List<String>> data = new LinkedHashMap<>();
@@ -703,9 +709,12 @@ public class ProcrastinationScatter<E> extends Plotly {
 	        for (int indice = 1; indice < cabeceras.size(); indice++) {
 	        	System.out.println("indice: " + cabeceras.get(indice) + ", modulo: " + modulo);
 	        	//La idea sería preguntar si el siguiente indice al de intento X esta vacio poner las tres celdas y si no iterar otros 3 indices y volver a probar y así...
-	        	if (cabeceras.get(indice).equalsIgnoreCase(modulo)) {
-	        		indice ++;
+	        	if (cabeceras.get(indice).split(" - ")[0].equalsIgnoreCase("(" + modulo + ")")) {
+    				data.get(alumno).set(indice, String.valueOf(tiempoDesdeApertura));
+    				indice ++;
     				data.get(alumno).set(indice, tiempoTranscurridoDesdeAperturaFormateado);
+    				indice ++;
+    				data.get(alumno).set(indice, String.valueOf(tiempoDesdeInicioIntento));
     				indice ++;
     				data.get(alumno).set(indice, tiempoDesdeInicioIntentoFormateado);
     				indice ++;
@@ -714,6 +723,9 @@ public class ProcrastinationScatter<E> extends Plotly {
 	        	}
 	        }
 	    }
+	    
+	    //Así ordena alfabéticamente los nombres de los alumnos
+  		data = new LinkedHashMap<>(new TreeMap<>(data));
 
 	    // Escribir el archivo CSV con CSVPrinter
 	    try (CSVPrinter printer = new CSVPrinter(getWritter(path),
