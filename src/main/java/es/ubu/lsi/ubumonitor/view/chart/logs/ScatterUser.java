@@ -60,6 +60,8 @@ public class ScatterUser extends PlotlyLog {
 			JSObject trace = createTrace(user.getFullName(), x, y);
 			trace.put("userids", userids);
 			data.add(trace);
+			
+			System.out.println("TRACE: " + trace);
 
 		}
 

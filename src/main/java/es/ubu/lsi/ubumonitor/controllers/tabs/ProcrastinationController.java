@@ -63,6 +63,11 @@ public class ProcrastinationController extends WebViewAction {
 	}
 	
 	@Override
+	public void updateListViewProcrastinationMetricMode() {
+		updateChart();
+	}
+	
+	@Override
 	public JavaConnector getJavaConnector() {
 		return javaConnector;
 	}

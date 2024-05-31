@@ -34,6 +34,8 @@ public interface MainAction {
 	
 	public default void updateListViewProcrastinationEvent() {}
 	
+	public default void updateListViewProcrastinationMetricMode() {}
+	
 	public void saveImage();
 	
 	public void copyImage();

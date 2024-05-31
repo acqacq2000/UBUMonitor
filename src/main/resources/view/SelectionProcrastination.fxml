@@ -39,6 +39,7 @@
                         <ColumnConstraints hgrow="NEVER" />
                       <ColumnConstraints hgrow="NEVER" />
                         <ColumnConstraints hgrow="NEVER" />
+                        <ColumnConstraints hgrow="NEVER" />
                         <ColumnConstraints hgrow="SOMETIMES" />
                     </columnConstraints>
                     <rowConstraints>
@@ -50,13 +51,26 @@
                     </rowConstraints>
                      <children>
                         <CheckBox fx:id="checkBoxProcrastinationAssigments" layoutX="166.0" layoutY="22.0" mnemonicParsing="false" selected="true" text="%label.showassigments" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                        <CheckBox fx:id="checkBoxProcrastinationQuizzes" layoutX="15.0" layoutY="27.0" mnemonicParsing="false" selected="true" text="%label.showquizzes" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                        <CheckComboBox fx:id="checkComboBoxProcrastinationEvents" maxWidth="200.0" minWidth="50.0" prefWidth="120.0" showCheckedCount="false" title="%label.selectEvents" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                        <CheckBox fx:id="checkBoxProcrastinationQuizzes" layoutX="15.0" layoutY="27.0" mnemonicParsing="false" selected="true" text="%label.showquizzes" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="comboBoxProcrastinationMetricMode" prefWidth="150.0" promptText="%label.selectMetricMode" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                        <CheckComboBox fx:id="checkComboBoxProcrastinationEvents" maxWidth="200.0" minWidth="50.0" prefWidth="120.0" showCheckedCount="false" title="%label.selectEvents" GridPane.columnIndex="5" GridPane.rowIndex="3" />
 						<TextField fx:id="textFieldProcrastination" prefWidth="100.0" promptText="%label.filter" GridPane.rowIndex="2" />
                         <Button mnemonicParsing="false" onAction="#selectAllAssignmentsAndQuizzes" text="%button.selectall" GridPane.rowIndex="3" />
                         <Label GridPane.columnIndex="2" GridPane.rowIndex="3">
                            <graphic>
-                              <ImageView pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="imageEvents" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/sections.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip text="%text.section" />
+                           </tooltip>
+                        </Label>
+                        <Label layoutX="160.0" layoutY="93.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                           <graphic>
+                              <ImageView fx:id="imageMetricMode" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../img/sections.png" />
                                  </image>

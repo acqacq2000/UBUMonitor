@@ -116,6 +116,8 @@ public class RiskBar extends Plotly {
 		trace.put("textposition", "'auto'");
 		trace.put("hovertemplate", "'<b>%{x}<br>%{data.name}:</b> %{y}<br><br>%{customdata}<extra></extra>'");
 
+		System.out.println("TRACE: " + trace);
+		
 		return trace;
 	}
 
