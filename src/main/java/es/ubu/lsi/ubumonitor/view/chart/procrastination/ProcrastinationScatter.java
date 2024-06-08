@@ -103,7 +103,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 
 		this.users = getSelectedEnrolledUser();
 
-		System.out.println("CONSTRUCTOR Events: " + events);
+		//System.out.println("CONSTRUCTOR Events: " + events);
 
 		List<TryInformation> tries = getData();
 		// Ordenar los tries según el orden de los usuarios en la lista users y luego
@@ -116,12 +116,12 @@ public class ProcrastinationScatter<E> extends Plotly {
 		// Reinicio selector de unidades de tiempo
 		tiempoMaximo(tries);
 
-		System.out.println("-----------------------------------------------------");
+		//System.out.println("-----------------------------------------------------");
 		for (TryInformation tri : tries)
-			System.out.println(tri);
-		System.out.println("-----------------------------------------------------");
+			//System.out.println(tri);
+		//System.out.println("-----------------------------------------------------");
 
-		System.out.println(maxTotalSeconds);
+		//System.out.println(maxTotalSeconds);
 		if (maxTotalSeconds >= 86400) {
 			unit = I18n.get("text.days");
 		} else if (maxTotalSeconds >= 3600) {
@@ -142,13 +142,13 @@ public class ProcrastinationScatter<E> extends Plotly {
 		List<LogLine> logLines = actualCourse.getLogs().getList();
 
 		for (LogLine logLine : logLines) {
-//        	System.out.println("LogLine courseModule: " + logLine.getCourseModule() == null? logLine.getCourseModule().getModuleName():"");
-//        	System.out.println("LogLine event: " + logLine.getEventName() == null? logLine.getCourseModule().getModuleName():"");
-//        	System.out.println("LogLine user: " + logLine.getUser() == null? logLine.getCourseModule().getModuleName():"");
-//        	System.out.println("Lista courseModule: " + modules);
-//        	System.out.println("Lista events: " + events);
-//        	System.out.println("Lista user: " + users);
-//        	if (logLine.getEventName().equals(Event.USER_GRADED)) System.out.println("LogLine: " + logLine.toString());
+//        	//System.out.println("LogLine courseModule: " + logLine.getCourseModule() == null? logLine.getCourseModule().getModuleName():"");
+//        	//System.out.println("LogLine event: " + logLine.getEventName() == null? logLine.getCourseModule().getModuleName():"");
+//        	//System.out.println("LogLine user: " + logLine.getUser() == null? logLine.getCourseModule().getModuleName():"");
+//        	//System.out.println("Lista courseModule: " + modules);
+//        	//System.out.println("Lista events: " + events);
+//        	//System.out.println("Lista user: " + users);
+//        	if (logLine.getEventName().equals(Event.USER_GRADED)) //System.out.println("LogLine: " + logLine.toString());
 
 			if (modules.contains(logLine.getCourseModule()) && events.contains(logLine.getEventName())
 					&& users.contains(logLine.getUser())) {
@@ -166,7 +166,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 
 	public void tiempoMaximo(List<TryInformation> tries) {
 
-		System.out.println("Entro a reiniciar maxTotalHeightSeconds");
+		//System.out.println("Entro a reiniciar maxTotalHeightSeconds");
 
 		maxTotalSeconds = 0L;
 
@@ -196,14 +196,14 @@ public class ProcrastinationScatter<E> extends Plotly {
 						long tiempoTranscurrido = nextTryInfo.getFechaSubida().toEpochSecond() - tryInfo.getFechaSubida().toEpochSecond();
 						
 						if (listViewProcrastinationMetricMode.getValue().equalsIgnoreCase(I18n.get("combobox.measureOpening"))){
-							System.out.println("Seleccionado: Desde apertura");
-							System.out.println("Para el modulo " + tryInfo.getCourseModule() + " if: " + maxTotalSeconds + " < " + tiempoTranscurridoDesdeApertura);
+							//System.out.println("Seleccionado: Desde apertura");
+							//System.out.println("Para el modulo " + tryInfo.getCourseModule() + " if: " + maxTotalSeconds + " < " + tiempoTranscurridoDesdeApertura);
 							if (maxTotalSeconds < tiempoTranscurridoDesdeApertura)
 								maxTotalSeconds = tiempoTranscurridoDesdeApertura;
 							
 						}else if (listViewProcrastinationMetricMode.getValue().equalsIgnoreCase(I18n.get("combobox.measureStartAttemp"))){
-							System.out.println("Seleccionado: Desde inicio de intento");
-							System.out.println("Para el modulo " + tryInfo.getCourseModule() + " if: " + maxTotalSeconds + " < " + tiempoTranscurrido);
+							//System.out.println("Seleccionado: Desde inicio de intento");
+							//System.out.println("Para el modulo " + tryInfo.getCourseModule() + " if: " + maxTotalSeconds + " < " + tiempoTranscurrido);
 							if (maxTotalSeconds < tiempoTranscurrido)
 								maxTotalSeconds = tiempoTranscurrido;
 							
@@ -226,12 +226,12 @@ public class ProcrastinationScatter<E> extends Plotly {
 			// Calcular la diferencia entre el tiempo de subida y el tiempo de apertura del
 			// módulo
 			long timeDifference = tryInfo.getFechaSubida().toEpochSecond() - tryInfo.getCourseModule().getTimeOpened().getEpochSecond();
-			System.out.println("Para el modulo " + tryInfo.getCourseModule() + " if: " + maxTotalSeconds + " < " + timeDifference);
+			//System.out.println("Para el modulo " + tryInfo.getCourseModule() + " if: " + maxTotalSeconds + " < " + timeDifference);
 			if (maxTotalSeconds < timeDifference)
 				maxTotalSeconds = timeDifference;
 		}
 
-		System.out.println("maxTotalHeightSeconds: " + maxTotalSeconds);
+		//System.out.println("maxTotalHeightSeconds: " + maxTotalSeconds);
 	}
 
 	public JSObject createTrace(CourseModule module, List<TryInformation> tries) {
@@ -276,9 +276,9 @@ public class ProcrastinationScatter<E> extends Plotly {
 							long tiempoInicio = tryInfo.getFechaSubida().toEpochSecond();
 							long tiempoFin = nextTryInfo.getFechaSubida().toEpochSecond();
 							long tiempoTranscurrido = tiempoFin - tiempoInicio;
-							System.out.println("tiempoInicio: " + tiempoInicio);
-							System.out.println("tiempoFin: " + tiempoFin);
-							System.out.println("Tiempo transcurrido: " + tiempoTranscurrido);
+							//System.out.println("tiempoInicio: " + tiempoInicio);
+							//System.out.println("tiempoFin: " + tiempoFin);
+							//System.out.println("Tiempo transcurrido: " + tiempoTranscurrido);
 
 							// Obtener la calificación del usuario
 							GradeItem calificacion = calificaciones.stream().filter(
@@ -302,6 +302,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 								//Añado datos para el CSV
 								objectsCSVwithNote.add(
 										new ObjectCSVwithNote(
+											user.getId(),
 											user.getFullName(), 
 											module.getModuleName(), 
 											tiempoTranscurridoDesdeApertura, 
@@ -318,7 +319,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 				}
 			}
 
-			System.out.println("");
+			//System.out.println("");
 			
 			JSArray datos = new JSArray();
 
@@ -419,14 +420,14 @@ public class ProcrastinationScatter<E> extends Plotly {
 
 					// Ahora tiempoTranscurridoAdaptado contiene el valor convertido correctamente
 					// en la unidad apropiada
-					System.out.println("Tiempo transcurrido: " + tiempoTranscurridoAdaptadoDesdeApertura + " " + unit);
+					//System.out.println("Tiempo transcurrido: " + tiempoTranscurridoAdaptadoDesdeApertura + " " + unit);
 
 					if (listViewProcrastinationMetricMode.getValue().equalsIgnoreCase(I18n.get("combobox.measureOpening"))){
-						System.out.println("Seleccionado: Desde apertura");
+						//System.out.println("Seleccionado: Desde apertura");
 						z.addWithQuote(tiempoTranscurridoAdaptado);
 						x.addWithQuote(tiempoTranscurridoAdaptadoDesdeApertura);
 					}else if (listViewProcrastinationMetricMode.getValue().equalsIgnoreCase(I18n.get("combobox.measureStartAttemp"))){
-						System.out.println("Seleccionado: Desde inicio de intento");
+						//System.out.println("Seleccionado: Desde inicio de intento");
 						x.addWithQuote(tiempoTranscurridoAdaptado);
 						z.addWithQuote(tiempoTranscurridoAdaptadoDesdeApertura);
 					}
@@ -444,7 +445,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 					customdata.add(datos);
 					
 					userIds.add(user.getId());
-					System.out.println("CustomData: " + customdata);
+					//System.out.println("CustomData: " + customdata);
 
 					registros
 					.addWithQuote("<b>" + I18n.get("text.elapsedTimeTaskOpening") + ":</b> <br> %{customdata[0]} <br><br>"
@@ -478,11 +479,12 @@ public class ProcrastinationScatter<E> extends Plotly {
 				// Agregar la diferencia al mapa
 				double nota = calificacion.getEnrolledUserGrade(user);
 				if (!Double.isNaN(nota)) {// Si es == entonces todavia no tiene nota
-					System.out.println("Nota: " + nota);
+					//System.out.println("Nota: " + nota);
 					Map.Entry<Long, Double> timeAndGrade = new AbstractMap.SimpleEntry<>(timeDifference, nota);
 
 					objectsCSVwithNote.add(
 							new ObjectCSVwithNote(
+								user.getId(),
 								user.getFullName(), 
 								module.getModuleName(), 
 								timeDifference, 
@@ -490,7 +492,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 								nota
 							)
 					);
-					System.out.println(objectsCSVwithNote.get(objectsCSVwithNote.size() - 1));
+					//System.out.println(objectsCSVwithNote.get(objectsCSVwithNote.size() - 1));
 					// Agregar el par al mapa
 					// mapa.computeIfAbsent(user, k -> new HashSet<>()).add(timeAndGrade);
 
@@ -536,7 +538,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 
 					// Ahora tiempoTranscurridoAdaptado contiene el valor convertido correctamente
 					// en la unidad apropiada
-					System.out.println("Tiempo transcurrido: " + tiempoTranscurridoAdaptado + " " + unit);
+					//System.out.println("Tiempo transcurrido: " + tiempoTranscurridoAdaptado + " " + unit);
 
 					x.addWithQuote(tiempoTranscurridoAdaptado);
 					y.addWithQuote(timeAndGrade.getValue());
@@ -566,7 +568,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 			}
 		}
 
-		// System.out.println("Gradeitems: " + calificaciones);
+		// //System.out.println("Gradeitems: " + calificaciones);
 
 		
 
@@ -574,6 +576,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 
 		JSObject marker = new JSObject();
 		marker.put("color", rgb(module));
+		marker.put("size", 10);
 
 		trace.putWithQuote("name", "<b>" + module.getModuleName() + "</b> <br>");
 		trace.put("type", "'scatter'");
@@ -586,7 +589,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 		trace.put("customdata", customdata);
 		trace.put("hovertemplate", registros);
 
-		System.out.println("TRACE: " + trace);
+		//System.out.println("TRACE: " + trace);
 		
 		return trace;
 	}
@@ -594,14 +597,16 @@ public class ProcrastinationScatter<E> extends Plotly {
 	
 	@Override
 	public void createLayout(JSObject layout) {
-		JSObject xaxis = new JSObject();
-		defaultAxisValues(xaxis, getXAxisTitle(), null);
+	    JSObject xaxis = new JSObject();
+	    defaultAxisValues(xaxis, getXAxisTitle(), null);
+	    //xaxis.put("rangemode", "'tozero'"); // Asegura que el eje X empiece desde 0
 
-		JSObject yaxis = new JSObject();
-		defaultAxisValues(yaxis, getYAxisTitle(), null);
+	    JSObject yaxis = new JSObject();
+	    defaultAxisValues(yaxis, getYAxisTitle(), null);
+	    yaxis.put("rangemode", "'tozero'"); // Asegura que el eje Y empiece desde 0
 
-		layout.put("xaxis", xaxis);
-		layout.put("yaxis", yaxis);
+	    layout.put("xaxis", xaxis);
+	    layout.put("yaxis", yaxis);
 	}
 
 	@Override
@@ -613,7 +618,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 	@Override
 	public String getXAxisTitle() {
 
-		System.out.println(maxTotalSeconds);
+		//System.out.println(maxTotalSeconds);
 		if (maxTotalSeconds >= 86400) {
 			unit = I18n.get("text.days");
 		} else if (maxTotalSeconds >= 3600) {
@@ -627,10 +632,10 @@ public class ProcrastinationScatter<E> extends Plotly {
 		String desde = "";
 		
 		if (listViewProcrastinationMetricMode.getValue().equalsIgnoreCase(I18n.get("combobox.measureOpening"))){
-			System.out.println("Seleccionado: Desde apertura");
+			//System.out.println("Seleccionado: Desde apertura");
 			desde = I18n.get("text.measureOpening");
 		}else if (listViewProcrastinationMetricMode.getValue().equalsIgnoreCase(I18n.get("combobox.measureStartAttemp"))){
-			System.out.println("Seleccionado: Desde inicio de intento");
+			//System.out.println("Seleccionado: Desde inicio de intento");
 			desde = I18n.get("text.measureStartAttemp");
 		}
 
@@ -661,7 +666,8 @@ public class ProcrastinationScatter<E> extends Plotly {
 
 	    // Crear la lista de cabeceras incluyendo intentos
 	    List<String> cabeceras = new ArrayList<>();
-	    cabeceras.add(I18n.get("text.student"));
+		cabeceras.add(I18n.get("text.idStudent"));
+		cabeceras.add(I18n.get("text.student"));
 
 	    /*
 	    // Crear un map para almacenar el máximo número de intentos por módulo
@@ -693,8 +699,11 @@ public class ProcrastinationScatter<E> extends Plotly {
 	    Map<String, List<String>> data = new LinkedHashMap<>();
 	    
 	    for (ObjectCSVwithNote obj : objectsCSVwithNote) data.putIfAbsent(obj.getNombreUsuario(), new ArrayList<>(Collections.nCopies(cabeceras.size(), "")));
-	    System.out.println("data: " + data);
-	    for (ObjectCSVwithNote obj : objectsCSVwithNote) data.get(obj.getNombreUsuario()).set(0, obj.nombreUsuario); 
+	    //System.out.println("data: " + data);
+	    for (ObjectCSVwithNote obj : objectsCSVwithNote) {
+			data.get(obj.getNombreUsuario()).set(0, String.valueOf(obj.idUsuario));
+			data.get(obj.getNombreUsuario()).set(1, obj.nombreUsuario);
+	    }
 	    
 	    for (ObjectCSVwithNote obj : objectsCSVwithNote) {
 	        String alumno = obj.getNombreUsuario();
@@ -706,8 +715,8 @@ public class ProcrastinationScatter<E> extends Plotly {
 	        String tiempoDesdeInicioIntentoFormateado = obj.getTiempoTranscurridoDesdeInicioIntentoFormateado();
 	        double nota = obj.getNota();
 	        //Solo está diseñado para un solo intento de momento
-	        for (int indice = 1; indice < cabeceras.size(); indice++) {
-	        	System.out.println("indice: " + cabeceras.get(indice) + ", modulo: " + modulo);
+	        for (int indice = 2; indice < cabeceras.size(); indice++) {
+	        	//System.out.println("indice: " + cabeceras.get(indice) + ", modulo: " + modulo);
 	        	//La idea sería preguntar si el siguiente indice al de intento X esta vacio poner las tres celdas y si no iterar otros 3 indices y volver a probar y así...
 	        	if (cabeceras.get(indice).split(" - ")[0].equalsIgnoreCase("(" + modulo + ")")) {
     				data.get(alumno).set(indice, String.valueOf(tiempoDesdeApertura));
@@ -731,7 +740,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 	    try (CSVPrinter printer = new CSVPrinter(getWritter(path),
 	            CSVFormat.DEFAULT.withHeader(cabeceras.toArray(new String[0])))) {
 	    	for(List<String> fila: data.values()) {
-	    		System.out.println(fila);
+	    		//System.out.println(fila);
 	    		printer.printRecord(fila);
 	    	} 
 	    	
@@ -755,14 +764,19 @@ class ObjectCSVwithNote {
 	String nombreModulo;
 	
 	double nota;
+	int idUsuario;
+	
+	//Constructor, getter & setter, toString()
 	
 	public ObjectCSVwithNote(
+			int idUsuario,
 			String nombreUsuario, 
 			String nombreModulo, 
 			long tiempoTranscurridoDesdeApertura, 
 			long tiempoTranscurridoDesdeInicioIntento,
 			double nota) {
 		
+		this.idUsuario = idUsuario;
 		this.nombreUsuario = nombreUsuario;
 		this.nombreModulo = nombreModulo;
 		this.tiempoTranscurridoDesdeApertura = tiempoTranscurridoDesdeApertura;
@@ -813,6 +827,10 @@ class ObjectCSVwithNote {
 
 	public double getNota() {
 		return nota;
+	}
+	
+	public int getIdUsuario() {
+		return idUsuario;
 	}
 
 	@Override

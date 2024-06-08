@@ -111,13 +111,13 @@ public class SelectionProcrastinationController {
 	    listViewProcrastinationModules.getSelectionModel()
 	            .getSelectedItems()
 	            .addListener((Change<? extends CourseModule> courseModule) -> {
-	                System.out.println("He saltado el evento de selección de módulos");
+	                //System.out.println("He saltado el evento de selección de módulos");
 	                mainController.getActions().updateListViewProcrastination();
 	            });
 	}
 
 	private void fillProcrastinationListViewEvents(MainController mainController, Course actualCourse) {
-	    System.out.println("eventos: " + actualCourse.getUniqueComponentsEvents());
+	    //System.out.println("eventos: " + actualCourse.getUniqueComponentsEvents());
 	    filteredProcrastinationEvents = new FilteredList<>(
 	            FXCollections.observableArrayList(
 	                    actualCourse.getUniqueComponentsEvents().stream()
@@ -128,7 +128,7 @@ public class SelectionProcrastinationController {
 	    checkComboBoxProcrastinationEvents.getCheckModel().checkAll();
 	    checkComboBoxProcrastinationEvents.getCheckModel().getCheckedItems()
 	            .addListener((Change<? extends ComponentEvent> c) -> {
-	                System.out.println("He saltado el evento de selección de eventos");
+	                //System.out.println("He saltado el evento de selección de eventos");
 	                mainController.getActions().updateListViewProcrastinationEvent();
 	            });
 	}
@@ -137,7 +137,7 @@ public class SelectionProcrastinationController {
 	    comboBoxProcrastinationMetricMode.getItems().addAll(Arrays.asList(I18n.get("combobox.measureOpening"), I18n.get("combobox.measureStartAttemp")));
 	    comboBoxProcrastinationMetricMode.getSelectionModel().selectedItemProperty()
 	            .addListener((obs, oldValue, newValue) -> {
-	                System.out.println("He saltado el evento de medidas");
+	                //System.out.println("He saltado el evento de medidas");
 	                mainController.getActions().updateListViewProcrastinationMetricMode();
 	            });
 	    comboBoxProcrastinationMetricMode.getSelectionModel().select(0);

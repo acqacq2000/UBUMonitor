@@ -17,8 +17,9 @@ public class TryInformation implements Serializable {
 	public TryInformation() {}
 	
 	public TryInformation(int id) {
-		this.id = id;
+		this.setId(id);
 	}
+	//Getter & Setter & toString
 
 	public CourseModule getCourseModule() {
 		return courseModule;
@@ -51,12 +52,20 @@ public class TryInformation implements Serializable {
 	public void setFechaSubida(ZonedDateTime fechaSubida) {
 		this.fechaSubida = fechaSubida;
 	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	@Override
 	public String toString() {
 		return "TryInformation [courseModule=" + courseModule + ", componentEvent=" + componentEvent + ", user=" + user + ", fechaIntento=" + fechaSubida + "]";
 	}
-	
+
 	public static List<ModuleType> EventProcrastincationModuleTypesSubgroup = Arrays.asList(
 		ModuleType.ASSIGNMENT,
 		ModuleType.QUIZ

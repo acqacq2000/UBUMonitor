@@ -10,11 +10,11 @@ package es.ubu.lsi.ubumonitor;
 public class AppInfo {
 
 
-	public static final String VERSION = "2.10.4";
+	public static final String VERSION = "2.11.8";
 	
 	public static final String APPLICATION_VERSION = "v" + VERSION;
 	
-	public static final String MODEL_VERSION = "v.1.1";
+	public static final String MODEL_VERSION = "v.1.2";
 
 	public static final String APPLICATION_NAME = "UBUMonitor";
 

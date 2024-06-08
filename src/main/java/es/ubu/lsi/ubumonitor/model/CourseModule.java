@@ -82,12 +82,12 @@ public class CourseModule implements Serializable {
 	
 	//Added
 	/**
-	 * Optional. module(assignment) opened date
+	 * Optional. module opened date
 	 */
 	private Instant timeOpened;
 	//Added
 	/**
-	 * Optional. module(assignment) due date
+	 * Optional. module due date
 	 */
 	private Instant timeDue;
 	/**

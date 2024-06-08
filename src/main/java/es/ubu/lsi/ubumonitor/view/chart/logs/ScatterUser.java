@@ -61,7 +61,7 @@ public class ScatterUser extends PlotlyLog {
 			trace.put("userids", userids);
 			data.add(trace);
 			
-			System.out.println("TRACE: " + trace);
+			//System.out.println("TRACE: " + trace);
 
 		}
 
