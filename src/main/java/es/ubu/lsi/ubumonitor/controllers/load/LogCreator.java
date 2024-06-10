@@ -68,14 +68,6 @@ public class LogCreator {
 
 	private static final Set<String> ALL_COLUMNS = new HashSet<>(Arrays.asList(TIME, USER_FULL_NAME, AFFECTED_USER,
 			EVENT_CONTEXT, COMPONENT, EVENT_NAME, DESCRIPTION, ORIGIN, IP_ADRESS));
-	
-	//--------------------------------------------------------
-	//AQUI AÑADO MI TROZO DE CODIGO
-	
-	public static List<TryInformation> tries = new ArrayList<TryInformation>();
-	
-	//AQUI TERMINO DE AÑADIR MI TROZO DE CODIGO
-	//--------------------------------------------------------
 
 	/**
 	 * Cambia la zona horia del formateador de tiempo
@@ -173,41 +165,12 @@ public class LogCreator {
 				.keySet();
 		LOGGER.info("Los nombres de las columnas del csv son: {}", headers);
 		
-		//HE HECHO UN SOUT
-		System.out.println("Los nombres de las columnas del csv son: {}" + headers);
-		
 		if (!headers.isEmpty() && headers.stream()
 				.noneMatch(ALL_COLUMNS::contains)) {
 			throw new IllegalArgumentException(I18n.get("error.logsEnglish"));
 		}
 		for (CSVRecord csvRecord : csvParser) {
 			LogLine logLine = createLog(headers, csvRecord);
-			//System.out.println("LOGLINE" + logLine);
-			
-			
-			//--------------------------------------------------------
-			//AQUI AÑADO MI TROZO DE CODIGO
-			
-			if(logLine.getComponent() == Component.QUIZ || logLine.getComponent() == Component.ASSIGNMENT) {
-				//System.out.println("Estoy recogiendo un " + logLine.getEventName().getName());
-				if(logLine.getEventName() == Event.QUIZ_ATTEMPT_SUBMITTED || logLine.getEventName() == Event.A_SUBMISSION_HAS_BEEN_SUBMITTED) {
-					
-					TryInformation intento;
-					
-					intento = new TryInformation();
-					intento.courseModule = logLine.getCourseModule();
-					intento.user = logLine.getUser();
-					intento.fechaSubida = logLine.getTime();
-					System.out.println(intento.toString());
-					
-					tries.add(intento);
-				}
-			}
-			
-			//AQUI TERMINO DE AÑADIR MI TROZO DE CODIGO
-			//--------------------------------------------------------
-			
-		
 			
 			logs.addFirst(logLine);
 

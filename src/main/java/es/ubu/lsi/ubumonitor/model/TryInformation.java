@@ -9,10 +9,10 @@ public class TryInformation implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private int id;
-	public CourseModule courseModule;
-	public ComponentEvent componentEvent;
-	public EnrolledUser user;
-	public ZonedDateTime fechaSubida;
+	private CourseModule courseModule;
+	private ComponentEvent componentEvent;
+	private EnrolledUser user;
+	private ZonedDateTime fechaSubida;
 	
 	public TryInformation() {}
 	

@@ -79,8 +79,6 @@ public class ProcrastinationScatter<E> extends Plotly {
 
 	@Override
 	public void createData(JSArray data) {
-		// TODO Auto-generated method stu
-
 		// Oculto el checkbox de eventos y su imagen y muestro el checkbox de metricas y
 		// su imagen
 		listViewProcrastinationEvent.setVisible(false);
@@ -109,7 +107,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 		// Ordenar los tries según el orden de los usuarios en la lista users y luego
 		// dentro de cada user en orden de llegada de los eventos
 		tries.sort(Comparator.comparing((TryInformation tryInfo) -> {
-			EnrolledUser user = tryInfo.user;
+			EnrolledUser user = tryInfo.getUser();
 			return users.indexOf(user); // Obtiene el índice del usuario en la lista users
 		}).thenComparingLong(tryInfo -> tryInfo.getFechaSubida().toEpochSecond()));
 
@@ -154,10 +152,10 @@ public class ProcrastinationScatter<E> extends Plotly {
 					&& users.contains(logLine.getUser())) {
 
 				TryInformation intento = new TryInformation();
-				intento.courseModule = logLine.getCourseModule();
-				intento.componentEvent = logLine.getComponentEvent();
-				intento.user = logLine.getUser();
-				intento.fechaSubida = logLine.getTime();
+				intento.setCourseModule(logLine.getCourseModule());
+				intento.setComponentEvent(logLine.getComponentEvent());
+				intento.setUser(logLine.getUser());
+				intento.setFechaSubida(logLine.getTime());
 				tries.add(intento);
 			}
 		}
@@ -248,7 +246,7 @@ public class ProcrastinationScatter<E> extends Plotly {
 		JSArray userIds = new JSArray();
 
 
-		List<TryInformation> moduleTries = tries.stream().filter(tryInfo -> tryInfo.courseModule.equals(module))
+		List<TryInformation> moduleTries = tries.stream().filter(tryInfo -> tryInfo.getCourseModule().equals(module))
 				.collect(Collectors.toList());
 
 		if (module.getModuleType().equals(ModuleType.QUIZ)) {
@@ -477,7 +475,10 @@ public class ProcrastinationScatter<E> extends Plotly {
 						.findFirst().orElse(null);
 
 				// Agregar la diferencia al mapa
-				double nota = calificacion.getEnrolledUserGrade(user);
+				double nota = Double.NaN;
+				if (calificacion != null)
+					nota = calificacion.getEnrolledUserGrade(user);
+				
 				if (!Double.isNaN(nota)) {// Si es == entonces todavia no tiene nota
 					//System.out.println("Nota: " + nota);
 					Map.Entry<Long, Double> timeAndGrade = new AbstractMap.SimpleEntry<>(timeDifference, nota);

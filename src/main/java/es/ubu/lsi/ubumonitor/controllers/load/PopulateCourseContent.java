@@ -96,8 +96,8 @@ public class PopulateCourseContent {
 
 		// Added
 		if (TryInformation.EventProcrastincationModuleTypesSubgroup.contains(module.getModuleType())) {
-			System.out.println("get type " + module.getModuleType());
-			System.out.println("JSON\n" + jsonObject.toString(6));
+			//System.out.println("get type " + module.getModuleType());
+			//System.out.println("JSON\n" + jsonObject.toString(6));
 
 			try {
 
@@ -150,8 +150,8 @@ public class PopulateCourseContent {
 
 			} catch (JSONException e) {System.err.print("Error capturando fechas --> " + e.getStackTrace());}
 
-			System.out.println("La tarea " + module.getModuleName() + " abrió el " + module.getTimeOpened()
-			+ " y cerró el " + module.getTimeDue());
+			//System.out.println("La tarea " + module.getModuleName() + " abrió el " + module.getTimeOpened()
+			//+ " y cerró el " + module.getTimeDue());
 
 		}
 

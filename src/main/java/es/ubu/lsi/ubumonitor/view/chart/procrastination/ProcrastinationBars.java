@@ -105,7 +105,7 @@ public class ProcrastinationBars<E> extends Plotly {
 		// Ordenar los tries según el orden de los usuarios en la lista users y luego
 		// dentro de cada user en orden de llegada de los eventos
 		tries.sort(Comparator.comparing((TryInformation tryInfo) -> {
-			EnrolledUser user = tryInfo.user;
+			EnrolledUser user = tryInfo.getUser();
 			return users.indexOf(user); // Obtiene el índice del usuario en la lista users
 		}).thenComparingLong(tryInfo -> tryInfo.getFechaSubida().toEpochSecond()));
 
@@ -122,7 +122,7 @@ public class ProcrastinationBars<E> extends Plotly {
 			colors = UtilMethods.getRandomColors(keys);
 
 		maxTotalHeightSeconds = tries.stream().mapToLong(intento -> (long) (intento.getFechaSubida().toEpochSecond()
-				- intento.courseModule.getTimeOpened().getEpochSecond())).max().orElse(0L);
+				- intento.getCourseModule().getTimeOpened().getEpochSecond())).max().orElse(0L);
 		//System.out.println(maxTotalHeightSeconds);
 		if (maxTotalHeightSeconds >= 86400) {
 			unit = I18n.get("text.days");
@@ -151,10 +151,10 @@ public class ProcrastinationBars<E> extends Plotly {
 			if (modules.contains(logLine.getCourseModule()) && events.contains(logLine.getEventName())
 					&& users.contains(logLine.getUser())) {
 				TryInformation intento = new TryInformation();
-				intento.courseModule = logLine.getCourseModule();
-				intento.componentEvent = logLine.getComponentEvent();
-				intento.user = logLine.getUser();
-				intento.fechaSubida = logLine.getTime();
+				intento.setCourseModule(logLine.getCourseModule());
+				intento.setComponentEvent(logLine.getComponentEvent());
+				intento.setUser(logLine.getUser());
+				intento.setFechaSubida(logLine.getTime());
 				tries.add(intento);
 			}
 		}
@@ -164,7 +164,7 @@ public class ProcrastinationBars<E> extends Plotly {
 	public JSObject createTrace(CourseModule module, Event event, List<TryInformation> tries) {
 		// Filtrar los intentos del módulo actual
 		List<TryInformation> moduleEventTries = tries.stream().filter(
-				tryInfo -> tryInfo.courseModule.equals(module) && tryInfo.componentEvent.getEventName().equals(event))
+				tryInfo -> tryInfo.getCourseModule().equals(module) && tryInfo.getComponentEvent().getEventName().equals(event))
 				.collect(Collectors.toList());
 		// Crear listas para almacenar los valores de las coordenadas x, y y alturas
 		JSArray userNames = new JSArray();
@@ -187,7 +187,7 @@ public class ProcrastinationBars<E> extends Plotly {
 			//System.out.println("TRY_INFO: tiempoEventoAnterior: " + tiempoEventoAnterior);
 			JSArray datos = new JSArray(); // USUARIO, MODULO, EVENTO, TIEMPO_TOTAL, (TIEMPO_ACTUAL), INSTANTE
 			// Obtener el usuario
-			EnrolledUser user = tryInfo.user;
+			EnrolledUser user = tryInfo.getUser();
 			userIds.add(user.getId());
 
 			//System.out.println("UserAnterior: " + userAnterior + ", user : " + user);
