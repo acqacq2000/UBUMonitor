@@ -15,7 +15,6 @@ import es.ubu.lsi.ubumonitor.model.DescriptionFormat;
 import es.ubu.lsi.ubumonitor.model.ModuleType;
 import es.ubu.lsi.ubumonitor.model.Section;
 import es.ubu.lsi.ubumonitor.model.TryInformation;
-import es.ubu.lsi.ubumonitor.model.log.logtypes.Course;
 import es.ubu.lsi.ubumonitor.util.UtilMethods;
 import es.ubu.lsi.ubumonitor.webservice.api.core.course.CoreCourseGetContents;
 import es.ubu.lsi.ubumonitor.webservice.webservices.WebService;
@@ -76,9 +75,6 @@ public class PopulateCourseContent {
 	}
 
 	private CourseModule populateCourseModule(JSONObject jsonObject) {
-		//System.out.println("entro en el populat course module" + jsonObject.optInt(Constants.DUEDATE));
-		//System.out.println("JSON\n" + jsonObject.toString(6));
-		//System.out.println("get type " + module.getModuleType());
 
 		CourseModule module = dataBase.getModules()
 				.getById(jsonObject.getInt(Constants.ID));
@@ -94,11 +90,8 @@ public class PopulateCourseContent {
 		module.setModplural(jsonObject.optString(Constants.MODPLURAL));
 		module.setIndent(jsonObject.optInt(Constants.INDENT));
 
-		// Added
+		// Added Adrian Caballero Quiroga
 		if (TryInformation.EventProcrastincationModuleTypesSubgroup.contains(module.getModuleType())) {
-			//System.out.println("get type " + module.getModuleType());
-			//System.out.println("JSON\n" + jsonObject.toString(6));
-
 			try {
 
 				if (module.getModuleType().equals(ModuleType.ASSIGNMENT)) {
@@ -149,10 +142,6 @@ public class PopulateCourseContent {
 				}
 
 			} catch (JSONException e) {System.err.print("Error capturando fechas --> " + e.getStackTrace());}
-
-			//System.out.println("La tarea " + module.getModuleName() + " abrió el " + module.getTimeOpened()
-			//+ " y cerró el " + module.getTimeDue());
-
 		}
 
 		return module;

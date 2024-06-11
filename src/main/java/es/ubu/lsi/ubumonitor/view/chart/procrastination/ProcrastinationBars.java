@@ -2,15 +2,11 @@ package es.ubu.lsi.ubumonitor.view.chart.procrastination;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.text.MessageFormat;
-import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -23,7 +19,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.controlsfx.control.CheckComboBox;
 
-import es.ubu.lsi.ubumonitor.controllers.Controller;
 import es.ubu.lsi.ubumonitor.controllers.MainController;
 import es.ubu.lsi.ubumonitor.controllers.SelectionProcrastinationController.SeparatorComponentEvent;
 import es.ubu.lsi.ubumonitor.model.ComponentEvent;
@@ -39,12 +34,17 @@ import es.ubu.lsi.ubumonitor.util.UtilMethods;
 import es.ubu.lsi.ubumonitor.view.chart.ChartType;
 import es.ubu.lsi.ubumonitor.view.chart.Plotly;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.util.Pair;
 
-public class ProcrastinationBars<E> extends Plotly {
+/**
+ * 
+ * @author Adrián Caballero Quiroga
+ * @since 2.11.8
+ *
+ */
+public class ProcrastinationBars extends Plotly {
 
 	private ListView<CourseModule> listViewProcrastination;
 	private CheckComboBox<ComponentEvent> listViewProcrastinationEvent;
@@ -70,7 +70,6 @@ public class ProcrastinationBars<E> extends Plotly {
 		this.imageEvents = imageEvents;
 		this.imageMetricMode = imageMetricMode;
 
-		// useRangeDate = true;
 		useLegend = true;
 	}
 
@@ -109,10 +108,6 @@ public class ProcrastinationBars<E> extends Plotly {
 			return users.indexOf(user); // Obtiene el índice del usuario en la lista users
 		}).thenComparingLong(tryInfo -> tryInfo.getFechaSubida().toEpochSecond()));
 
-		//System.out.println("-----------------------------------------------------");
-		// for (TryInformation tri: tries) //System.out.println(tri);
-		//System.out.println("-----------------------------------------------------");
-
 		List<Pair<CourseModule, Event>> keys = new ArrayList<>();
 		for (CourseModule module : modules)
 			for (Event event : events)
@@ -123,7 +118,6 @@ public class ProcrastinationBars<E> extends Plotly {
 
 		maxTotalHeightSeconds = tries.stream().mapToLong(intento -> (long) (intento.getFechaSubida().toEpochSecond()
 				- intento.getCourseModule().getTimeOpened().getEpochSecond())).max().orElse(0L);
-		//System.out.println(maxTotalHeightSeconds);
 		if (maxTotalHeightSeconds >= 86400) {
 			unit = I18n.get("text.days");
 		} else if (maxTotalHeightSeconds >= 3600) {
@@ -137,9 +131,6 @@ public class ProcrastinationBars<E> extends Plotly {
 		for (CourseModule module : modules)
 			for (Event event : events)
 				data.add(createTrace(module, event, tries));
-		//System.out.println("TRAZA TOTAL: " + data);
-
-		//System.out.println(objectsCSV);
 	}
 
 	public List<TryInformation> getData(List<EnrolledUser> users, List<CourseModule> modules, List<Event> events) {
@@ -163,8 +154,9 @@ public class ProcrastinationBars<E> extends Plotly {
 
 	public JSObject createTrace(CourseModule module, Event event, List<TryInformation> tries) {
 		// Filtrar los intentos del módulo actual
-		List<TryInformation> moduleEventTries = tries.stream().filter(
-				tryInfo -> tryInfo.getCourseModule().equals(module) && tryInfo.getComponentEvent().getEventName().equals(event))
+		List<TryInformation> moduleEventTries = tries.stream()
+				.filter(tryInfo -> tryInfo.getCourseModule().equals(module)
+						&& tryInfo.getComponentEvent().getEventName().equals(event))
 				.collect(Collectors.toList());
 		// Crear listas para almacenar los valores de las coordenadas x, y y alturas
 		JSArray userNames = new JSArray();
@@ -184,14 +176,10 @@ public class ProcrastinationBars<E> extends Plotly {
 		// Iterar sobre cada usuario y calcular la altura total
 		for (TryInformation tryInfo : moduleEventTries) {
 
-			//System.out.println("TRY_INFO: tiempoEventoAnterior: " + tiempoEventoAnterior);
 			JSArray datos = new JSArray(); // USUARIO, MODULO, EVENTO, TIEMPO_TOTAL, (TIEMPO_ACTUAL), INSTANTE
 			// Obtener el usuario
 			EnrolledUser user = tryInfo.getUser();
 			userIds.add(user.getId());
-
-			//System.out.println("UserAnterior: " + userAnterior + ", user : " + user);
-			// if(userAnterior != user) userAnterior = null;
 
 			// Agregar el usuario a la lista de coordenadas x
 			userNames.addWithQuote(user.getFullName());
@@ -204,8 +192,6 @@ public class ProcrastinationBars<E> extends Plotly {
 			datos.addWithQuote(I18n.get(event));
 
 			// Calcular la altura total
-			// long totalHeight = module.getTimeOpened().getEpochSecond() -
-			// tryInfo.getFechaSubida().toEpochSecond();
 			long diferenciaTiempoEntreEventos = 0;
 			if (user.equals(userAnterior)) {
 				tiempoDesdeApertura = tryInfo.getFechaSubida().toEpochSecond()
@@ -221,7 +207,6 @@ public class ProcrastinationBars<E> extends Plotly {
 
 				heights.add(tiempoDesdeApertura);
 			}
-			//System.out.println("tiempoEventoAnterior: " + tiempoEventoAnterior);
 
 			// Convertir segundos a horas, minutos y segundos
 			long horasActuales = diferenciaTiempoEntreEventos / 3600;
@@ -237,15 +222,12 @@ public class ProcrastinationBars<E> extends Plotly {
 				long diasTotales = horasTotales / 24;
 				horasActuales = horasActuales % 24;
 				horasTotales = horasTotales % 24;
-				// datos.addWithQuote(String.format("%d días %02d:%02d:%02d", days, hours,
-				// minutes, seconds));
 				datos.addWithQuote(String.format("%dd %02dh %02dm %02ds", diasTotales, horasTotales, minutosTotales,
 						segundosTotales));
 				datos.addWithQuote(String.format("%dd %02dh %02dm %02ds", diasActuales, horasActuales, minutosActuales,
 						segundosActuales));
 
 			} else {
-				// datos.addWithQuote(String.format("%02d:%02d:%02d", hours, minutes, seconds));
 				datos.addWithQuote(String.format("%02dh %02dm %02ds", horasTotales, minutosTotales, segundosTotales));
 				datos.addWithQuote(
 						String.format("%02dh %02dm %02ds", horasActuales, minutosActuales, segundosActuales));
@@ -259,9 +241,6 @@ public class ProcrastinationBars<E> extends Plotly {
 				clarito = !clarito;
 				if (clarito) {
 					Color d = c.brighter().brighter();
-					// //System.out.println("CAMBIO COLOR: (" + c.getRed() + ", " + c.getGreen() + ",
-					// " + c.getBlue() + ") --> (" + d.getRed() + ", " + d.getGreen() + ", " +
-					// d.getBlue() + ")");
 					c = d;
 				}
 
@@ -269,12 +248,8 @@ public class ProcrastinationBars<E> extends Plotly {
 				clarito = false;
 			}
 
-			// //System.out.println("USUARIO:" + user + ", ANTERIOR: " + userAnterior + ",
-			// IGUALES: " + user.equals(userAnterior) + ", CLARITO: " + clarito);
-
 			colorBar.addWithQuote(String.format("'rgba(%d,%d,%d,1.0)'", c.getRed(), c.getGreen(), c.getBlue()));
 
-			//System.out.println("Usuarios iguales: " + user.equals(userAnterior));
 			if (user.equals(userAnterior))
 				numeroIntentos++;
 			else
@@ -309,19 +284,12 @@ public class ProcrastinationBars<E> extends Plotly {
 			customdata.add(datos);
 		}
 
-		// //System.out.println("COLORS:" + colors);
-		// //System.out.println("COLOR BAR:" + colorBar);
-		// //System.out.println("COLOR BORDER BAR:" + colorBorderBar);
-
-		// //System.out.println(customdata);
-
 		// Crear la traza para el módulo actual
 		JSObject trace = new JSObject();
 		trace.put("type", "'bar'");
 		trace.putWithQuote("name", "<b>" + module.getModuleName() + "</b> <br> \t\t" + I18n.get(event));
 		trace.put("x", userNames);
 		trace.put("userids", userIds);
-		// //System.out.println("Heights: " + heights);
 		JSArray convertedHeights = new JSArray();
 		if (maxTotalHeightSeconds >= 86400) {
 			unit = I18n.get("text.days");
@@ -342,7 +310,6 @@ public class ProcrastinationBars<E> extends Plotly {
 			unit = I18n.get("text.seconds");
 		}
 		heights = convertedHeights;
-		//System.out.println("Heights: " + heights);
 
 		trace.put("y", heights);
 
@@ -352,7 +319,6 @@ public class ProcrastinationBars<E> extends Plotly {
 		trace.put("customdata", customdata);
 		trace.put("hovertemplate", registros);
 
-		// //System.out.println(trace.toString());
 		return trace;
 	}
 
@@ -380,7 +346,7 @@ public class ProcrastinationBars<E> extends Plotly {
 
 	@Override
 	public String getXAxisTitle() {
-		return "<b>" + I18n.get("text.elapsedTime") + "</b>";
+		return "<b>" + I18n.get("text.students") + "</b>";
 	}
 
 	@Override
@@ -423,7 +389,6 @@ public class ProcrastinationBars<E> extends Plotly {
 
 		for (ObjectCSV obj : objectsCSV)
 			data.putIfAbsent(obj.getNombreUsuario(), new ArrayList<>(Collections.nCopies(cabeceras.size(), "")));
-		//System.out.println("data: " + data);
 		for (ObjectCSV obj : objectsCSV) {
 			data.get(obj.getNombreUsuario()).set(0, String.valueOf(obj.idUsuario));
 			data.get(obj.getNombreUsuario()).set(1, obj.nombreUsuario);
@@ -434,25 +399,16 @@ public class ProcrastinationBars<E> extends Plotly {
 			String modulo = obj.getNombreModulo();
 			String evento = obj.getNombreEvento();
 			int intento = obj.getNumeroIntento();
-			long tiempoApertura = obj.getTiempoApertura();
 			long tiempoTranscurridoDesdeApertura = obj.getTiempoTranscurridoDesdeApertura();
-			String tiempoAperturaFormateado = obj.getTiempoAperturaFormateado();
 			String tiempoTranscurridoDesdeAperturaFormateado = obj.getTiempoTranscurridoDesdeAperturaFormateado();
 
 			for (int indice = 2; indice < cabeceras.size(); indice++) {
-				//System.out.println("indice: " + cabeceras.get(indice) + ", modulo: " + modulo);
 				if (cabeceras.get(indice).split(" - ")[0].equalsIgnoreCase("(" + modulo + ")")) {
-					// data.get(alumno).set(indice, String.valueOf(tiempoApertura));
-					// data.get(alumno).set(indice, tiempoAperturaFormateado);
-					for (indice = indice; indice < cabeceras.size(); indice++) {
-						//System.out.println("\t indice: " + cabeceras.get(indice) + ", intento: " + intento);
+					for (; indice < cabeceras.size(); indice++) {
 						if (cabeceras.get(indice).split(" - ")[1].split(" ")[1]
 								.equalsIgnoreCase(String.valueOf(intento))) {
-							for (indice = indice; indice < cabeceras.size(); indice++) {
-								//System.out.println("\t\t indice: " + cabeceras.get(indice) + ", evento: " + evento);
+							for (; indice < cabeceras.size(); indice++) {
 								if (cabeceras.get(indice).split(" - ")[2].equalsIgnoreCase(evento)) {
-									// data.get(alumno).set(indice,
-									// String.valueOf(tiempoTranscurridoDesdeApertura));
 									data.get(alumno).set(indice, String.valueOf(tiempoTranscurridoDesdeApertura));
 									indice++;
 									data.get(alumno).set(indice, tiempoTranscurridoDesdeAperturaFormateado);
@@ -467,7 +423,7 @@ public class ProcrastinationBars<E> extends Plotly {
 			}
 		}
 
-		//Así ordena alfabéticamente los nombres de los alumnos
+		// Así ordena alfabéticamente los nombres de los alumnos
 		data = new LinkedHashMap<>(new TreeMap<>(data));
 
 		// Escribir el archivo CSV con CSVPrinter
@@ -478,95 +434,96 @@ public class ProcrastinationBars<E> extends Plotly {
 
 		}
 	}
-}
 
-class ObjectCSV {
+	class ObjectCSV {
 
-	long tiempoApertura;
-	String tiempoAperturaFormateado;
+		long tiempoApertura;
+		String tiempoAperturaFormateado;
 
-	long tiempoTranscurridoDesdeApertura;
-	String tiempoTranscurridoDesdeAperturaFormateado;
+		long tiempoTranscurridoDesdeApertura;
+		String tiempoTranscurridoDesdeAperturaFormateado;
 
-	String nombreUsuario;
-	String nombreModulo;
-	String nombreEvento;
+		String nombreUsuario;
+		String nombreModulo;
+		String nombreEvento;
 
-	int numeroIntento;
-	int idUsuario;
+		int numeroIntento;
+		int idUsuario;
 
-	public ObjectCSV(int idUsuario, String nombreUsuario, String nombreModulo, String nombreEvento, long tiempoApertura,
-			long tiempoTranscurridoDesdeApertura, int numeroIntento) {
+		public ObjectCSV(int idUsuario, String nombreUsuario, String nombreModulo, String nombreEvento,
+				long tiempoApertura, long tiempoTranscurridoDesdeApertura, int numeroIntento) {
 
-		this.idUsuario = idUsuario;
-		this.nombreUsuario = nombreUsuario;
-		this.nombreModulo = nombreModulo;
-		this.nombreEvento = nombreEvento;
-		this.tiempoApertura = tiempoApertura;
-		this.tiempoTranscurridoDesdeApertura = tiempoTranscurridoDesdeApertura;
-		this.numeroIntento = numeroIntento;
+			this.idUsuario = idUsuario;
+			this.nombreUsuario = nombreUsuario;
+			this.nombreModulo = nombreModulo;
+			this.nombreEvento = nombreEvento;
+			this.tiempoApertura = tiempoApertura;
+			this.tiempoTranscurridoDesdeApertura = tiempoTranscurridoDesdeApertura;
+			this.numeroIntento = numeroIntento;
 
-		this.tiempoAperturaFormateado = formatearSegundos(this.tiempoApertura);
-		this.tiempoTranscurridoDesdeAperturaFormateado = formatearSegundos(this.tiempoTranscurridoDesdeApertura);
-	}
-
-	public long getTiempoApertura() {
-		return tiempoApertura;
-	}
-
-	public String getTiempoAperturaFormateado() {
-		return tiempoAperturaFormateado;
-	}
-
-	public long getTiempoTranscurridoDesdeApertura() {
-		return tiempoTranscurridoDesdeApertura;
-	}
-
-	public String getTiempoTranscurridoDesdeAperturaFormateado() {
-		return tiempoTranscurridoDesdeAperturaFormateado;
-	}
-
-	public String getNombreUsuario() {
-		return nombreUsuario;
-	}
-
-	public String getNombreModulo() {
-		return nombreModulo;
-	}
-
-	public String getNombreEvento() {
-		return nombreEvento;
-	}
-
-	public int getNumeroIntento() {
-		return numeroIntento;
-	}
-	
-	public int getIdUsuario() {
-		return idUsuario;
-	}
-
-	private String formatearSegundos(long segundos) {
-		// Convertir segundos a horas, minutos y segundos
-		long horasTotales = segundos / 3600;
-		long minutosTotales = (segundos % 3600) / 60;
-		long segundosTotales = segundos % 60;
-
-		if (horasTotales >= 24 || horasTotales <= -24) {
-			long diasTotales = horasTotales / 24;
-			horasTotales = horasTotales % 24;
-			return String.format("%dd %02dh %02dm %02ds", diasTotales, horasTotales, minutosTotales, segundosTotales);
-		} else {
-			return String.format("%02dh %02dm %02ds", horasTotales, minutosTotales, segundosTotales);
+			this.tiempoAperturaFormateado = formatearSegundos(this.tiempoApertura);
+			this.tiempoTranscurridoDesdeAperturaFormateado = formatearSegundos(this.tiempoTranscurridoDesdeApertura);
 		}
-	}
 
-	@Override
-	public String toString() {
-		return "ObjectCSV [tiempoApertura=" + tiempoApertura + ", tiempoAperturaFormateado=" + tiempoAperturaFormateado
-				+ ", tiempoTranscurridoDesdeApertura=" + tiempoTranscurridoDesdeApertura
-				+ ", tiempoTranscurridoDesdeAperturaFormateado=" + tiempoTranscurridoDesdeAperturaFormateado
-				+ ", nombreUsuario=" + nombreUsuario + ", nombreModulo=" + nombreModulo + ", nombreEvento="
-				+ nombreEvento + ", numeroIntento=" + numeroIntento + "]";
+		public long getTiempoApertura() {
+			return tiempoApertura;
+		}
+
+		public String getTiempoAperturaFormateado() {
+			return tiempoAperturaFormateado;
+		}
+
+		public long getTiempoTranscurridoDesdeApertura() {
+			return tiempoTranscurridoDesdeApertura;
+		}
+
+		public String getTiempoTranscurridoDesdeAperturaFormateado() {
+			return tiempoTranscurridoDesdeAperturaFormateado;
+		}
+
+		public String getNombreUsuario() {
+			return nombreUsuario;
+		}
+
+		public String getNombreModulo() {
+			return nombreModulo;
+		}
+
+		public String getNombreEvento() {
+			return nombreEvento;
+		}
+
+		public int getNumeroIntento() {
+			return numeroIntento;
+		}
+
+		public int getIdUsuario() {
+			return idUsuario;
+		}
+
+		private String formatearSegundos(long segundos) {
+			// Convertir segundos a horas, minutos y segundos
+			long horasTotales = segundos / 3600;
+			long minutosTotales = (segundos % 3600) / 60;
+			long segundosTotales = segundos % 60;
+
+			if (horasTotales >= 24 || horasTotales <= -24) {
+				long diasTotales = horasTotales / 24;
+				horasTotales = horasTotales % 24;
+				return String.format("%dd %02dh %02dm %02ds", diasTotales, horasTotales, minutosTotales,
+						segundosTotales);
+			} else {
+				return String.format("%02dh %02dm %02ds", horasTotales, minutosTotales, segundosTotales);
+			}
+		}
+
+		@Override
+		public String toString() {
+			return "ObjectCSV [tiempoApertura=" + tiempoApertura + ", tiempoAperturaFormateado="
+					+ tiempoAperturaFormateado + ", tiempoTranscurridoDesdeApertura=" + tiempoTranscurridoDesdeApertura
+					+ ", tiempoTranscurridoDesdeAperturaFormateado=" + tiempoTranscurridoDesdeAperturaFormateado
+					+ ", nombreUsuario=" + nombreUsuario + ", nombreModulo=" + nombreModulo + ", nombreEvento="
+					+ nombreEvento + ", numeroIntento=" + numeroIntento + "]";
+		}
 	}
 }

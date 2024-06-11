@@ -5,6 +5,12 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 
+ * @author Adrián Caballero Quiroga
+ * @since 2.11.8
+ *
+ */
 public class TryInformation implements Serializable {
 
 	private static final long serialVersionUID = 1L;

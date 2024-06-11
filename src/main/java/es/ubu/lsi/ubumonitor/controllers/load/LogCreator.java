@@ -27,7 +27,6 @@ import es.ubu.lsi.ubumonitor.model.Event;
 import es.ubu.lsi.ubumonitor.model.LogLine;
 import es.ubu.lsi.ubumonitor.model.Logs;
 import es.ubu.lsi.ubumonitor.model.Origin;
-import es.ubu.lsi.ubumonitor.model.TryInformation;
 import es.ubu.lsi.ubumonitor.model.log.logtypes.LogTypes;
 import es.ubu.lsi.ubumonitor.model.log.logtypes.ReferencesLog;
 import es.ubu.lsi.ubumonitor.util.I18n;
@@ -217,15 +216,10 @@ public class LogCreator {
 		
 		if (headers.contains(LogCreator.DESCRIPTION)) {
 			String description = csvRecord.get(LogCreator.DESCRIPTION);
-			//HE HECHO UN SOUT
-			//System.out.println(description);
 			
-			// ACQ correct description
+			// Start correct description
 		    description = description.replace("&#039;", "'"); // new line replace code with Moodle 4.4           
-		    // ACQ correct description
-		    
-		    //HE HECHO UN SOUT
-			//System.out.println(description);
+		    // End correct description
 			
 			
 			List<Integer> ids = getIdsInDescription(description);

@@ -39,7 +39,7 @@ public class PopulateGradeItem {
 	 * 
 	 * @since 2.10.4
 	 */
-	private static final String FOLDER_ICON_V4 = "icon fa fa-chevron-down fa-fw"; // Moodle 4.x expand 
+	//private static final String FOLDER_ICON_V4 = "icon fa fa-chevron-down fa-fw"; // Moodle 4.x expand 
 
 	/**
 	 * Nivel de jearquia del grade Item

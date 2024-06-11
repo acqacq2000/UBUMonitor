@@ -4,7 +4,6 @@ import org.controlsfx.control.CheckComboBox;
 
 import es.ubu.lsi.ubumonitor.controllers.MainController;
 import es.ubu.lsi.ubumonitor.controllers.configuration.MainConfiguration;
-import es.ubu.lsi.ubumonitor.controllers.tabs.ProcrastinationController;
 import es.ubu.lsi.ubumonitor.model.ComponentEvent;
 import es.ubu.lsi.ubumonitor.model.Course;
 import es.ubu.lsi.ubumonitor.model.CourseModule;
@@ -19,8 +18,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.web.WebView;
 
+/**
+ * 
+ * @author Adrián Caballero Quiroga
+ * @since 2.11.8
+ *
+ */
 public class ProcrastinationConnector extends JavaConnectorAbstract {
-	private ProcrastinationController procrastinationController;
 	
 	private GridPane dateGridPane;
 

@@ -13,6 +13,12 @@ import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+/**
+ * 
+ * @author Adrián Caballero Quiroga
+ * @since 2.11.8
+ *
+ */
 public class ProcrastinationController extends WebViewAction {
 	
 	private ProcrastinationConnector javaConnector;
